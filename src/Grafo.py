@@ -1,7 +1,7 @@
 # Biblioteca de tratamento de grafos necessária para desenhar graficamente o grafo
- #import networkx as nx
+import networkx as nx
 
- #import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 # Biblioteca de tratamento de grafos necessária para desenhar graficamente o grafo
 
 
