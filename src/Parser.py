@@ -1,5 +1,5 @@
 from Grafo import Graph
-import numpy as np
+
 class parser:
 
     def parser(self,mapa):
@@ -39,17 +39,17 @@ class parser:
                     listaR.append(keyD)                           # Coloca o nodo na lista de adjacência
                 if (keyD[0]==(key[0]-1) and keyD[1]==(key[1])):   # Condição que verifica se o nodo é adjacente ao dado
                     listaR.append(keyD)                           # Coloca o nodo na lista de adjacência
-                if (key[0]==(keyD[0]) and keyD[1]==(key[1])+2):   # Condição que verifica se o nodo é adjacente ao dado
+                if (key[0]==(keyD[0]) and keyD[1]==(key[1])+1):   # Condição que verifica se o nodo é adjacente ao dado
                     listaR.append(keyD)                           # Coloca o nodo na lista de adjacência
-                if (key[0]==(keyD[0]) and keyD[1]==(key[1])-2):   # Condição que verifica se o nodo é adjacente ao dado
+                if (key[0]==(keyD[0]) and keyD[1]==(key[1])-1):   # Condição que verifica se o nodo é adjacente ao dado
                     listaR.append(keyD)                             # Coloca o nodo na lista de adjacência
-                if  (keyD[0]==(key[0]+1) and keyD[1]==(key[1])+2):   # Condição que verifica se o nodo é adjacente ao dado
+                if  (keyD[0]==(key[0]+1) and keyD[1]==(key[1])+1):   # Condição que verifica se o nodo é adjacente ao dado
                     listaR.append(keyD)                               # Coloca o nodo na lista de adjacência
-                if  (keyD[0]==(key[0]+1) and keyD[1]==(key[1])-2):   # Condição que verifica se o nodo é adjacente ao dado
+                if  (keyD[0]==(key[0]+1) and keyD[1]==(key[1])-1):   # Condição que verifica se o nodo é adjacente ao dado
                     listaR.append(keyD)                               # Coloca o nodo na lista de adjacência
-                if  (keyD[0]==(key[0]-1) and keyD[1]==(key[1])-2):   # Condição que verifica se o nodo é adjacente ao dado
+                if  (keyD[0]==(key[0]-1) and keyD[1]==(key[1])-1):   # Condição que verifica se o nodo é adjacente ao dado
                     listaR.append(keyD)                               # Coloca o nodo na lista de adjacência
-                if  (keyD[0]==(key[0]-1) and keyD[1]==(key[1])+2):   # Condição que verifica se o nodo é adjacente ao dado
+                if  (keyD[0]==(key[0]-1) and keyD[1]==(key[1])+1):   # Condição que verifica se o nodo é adjacente ao dado
                     listaR.append(keyD)
 
         return listaR      # Dá se o return da lista de adjacência
@@ -66,14 +66,14 @@ class parser:
                     g.add_edge(nomeNodo,nomeNodoAdj,1)     # Criação de uma aresta no grafo que representa o mapa
             if dict[key]==2:           # Se o nodo pertence á meta, então calculamos os nodos adjacentes ao mesmo
                 #print("Este é o ponto onde vai ser calculado a matriz de adj", key)
-                nomeNodo = str(key[0]) + str(key[1])  #Criação de um nome para o nodo (Neste caso, é xy)
+                nomeNodo ='F' #Criação de um nome para o nodo (Neste caso, é xy)
                 lista2 = self.calcula_listaAdj(key, dict) # Calculo da lista de nodos adjacentes
                 for it2 in lista2:   # Percorrer a lista de adjacencia daquele nodo
                     nomeNodoAdj=str(it2[0])+str(it2[1])  # Criação de um nome para o nodo (Neste caso, é xy)
                     g.add_edge(nomeNodo,nomeNodoAdj,1)   # Criação de uma aresta no grafo que representa o mapa
             if dict[key]==-1:          # Se o nodo pertence á partida, então calculamos os nodos adjacentes ao mesmo
                 #print("Este é o ponto onde vai ser calculado a matriz de adj", key)
-                nomeNodo = str(key[0]) + str(key[1])  #Criação de um nome para o nodo (Neste caso, é xy)
+                nomeNodo ='P' #Criação de um nome para o nodo (Neste caso, é xy)
                 lista3 = self.calcula_listaAdj(key, dict)  # Calculo da lista de nodos adjacentes
                 for it3 in lista3: # Percorrer a lista de adjacencia daquele nodo
                     nomeNodoAdj = str(it3[0]) + str(it3[1]) # Criação de um nome para o nodo (Neste caso, é xy)

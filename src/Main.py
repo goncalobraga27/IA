@@ -11,5 +11,6 @@ def main():
     g=p.create_Grafo(dict)
     # lista=g.imprime_aresta()
     g.desenha()
+
 if __name__ == "__main__":
     main()
