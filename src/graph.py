@@ -31,9 +31,9 @@ class Graph:
         return out
 
     # Add edge to the graph, with weight
-    def add_edge(self, no1, no2, weight):  # node1 and node2 are coordinates
-        n1 = Node(no1)
-        n2 = Node(no2)
+    def add_edge(self, no1,p1,no2,p2, weight):  # node1 and node2 are coordinates
+        n1 = Node(no1,p1)
+        n2 = Node(no2,p2)
 
         if n1 not in self.nodes:
             self.nodes.add(n1)

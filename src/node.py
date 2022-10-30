@@ -5,8 +5,10 @@
 #############################################
 class Node:
     # Constructor of a node given the coordinates
-    def __init__(self, n):
+    def __init__(self, n,p):
         self.coord = n
+        self.position=p # If the node belongs to the wall this parameter is 1
+                        # Otherwise is 0
 
     # Returns the string representation of the node to be read 'friendly'
     def __str__(self):
