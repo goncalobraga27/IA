@@ -31,10 +31,7 @@ class Graph:
         return out
 
     # Add edge to the graph, with weight
-    def add_edge(self, no1, no2, weight):  # node1 and node2 are coordinates
-        n1 = Node(no1)
-        n2 = Node(no2)
-
+    def add_edge(self, n1, n2, weight):  # node1 and node2 are coordinates
         if n1 not in self.nodes:
             self.nodes.add(n1)
             self.graph[n1] = set()
@@ -73,6 +70,62 @@ class Graph:
             cost = cost + self.get_arc_cost(path[i-1], path[i])
             i = i + 1
         return cost
+
+    def search_dfs(self, start, end, path=None, visited=None):
+        if path is None:
+            path = []
+        if visited is None:
+            visited = set()
+
+        visited.add(start)
+        path.append(start)
+
+        if start == end:
+            return path, self.path_cost(path)
+
+        for (adjacent, weight) in self.graph[start]:
+            if adjacent not in visited:
+                result = self.search_dfs(adjacent, end, path, visited)
+                if result is not None:
+                    return result
+
+        path.pop()
+        return None
+
+        # BFS search, returns path and the path cost
+    def search_bfs(self, start, end):
+        path = []
+        visited = set()
+        queue = []
+        parent = dict()
+
+        visited.add(start)
+        queue.append(start)
+        parent[start] = None
+
+        if start == end:
+            return path, 0
+
+        while len(queue) != 0:
+            node = queue.pop(0)
+            for (adjacent, weight) in self.graph[node]:
+
+                if adjacent == end:
+                    parent[adjacent] = node
+                    aux = adjacent
+                    while aux is not None:
+                        path.append(aux)
+                        aux = parent[aux]
+
+                    path.reverse()
+                    return path, self.path_cost(path)
+
+                if adjacent not in visited:
+                    visited.add(adjacent)
+                    parent[adjacent] = node
+                    queue.append(adjacent)
+
+        return None
 
     # Draw the graph
     def graph_draw(self):
