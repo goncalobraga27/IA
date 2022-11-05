@@ -48,25 +48,62 @@ class VectorRace:
         vx = node.vel[0]
         vy = node.vel[1]
 
-        if self.dic[node.coord] != 1:
-            for mv in self.moves:
-                vel = (vx + mv[0], vy + mv[1])
-                pos = (x + vx + mv[0], y + vy + mv[1])
-                if pos in self.dic.keys():
-                    return_list.append(Node(pos, vel))
+        for mv in self.moves:
+            vel = (vx + mv[0], vy + mv[1])
+            pos = (x + vx + mv[0], y + vy + mv[1])
+            ns_coord = self.go_to_next_state(node.coord, pos)
+            if ns_coord == pos:
+                return_list.append((Node(pos, vel), 1))
+            elif ns_coord in self.goal:
+                return_list.append((Node(ns_coord, vel), 1))
+            else:
+                return_list.append((Node(ns_coord, (0, 0)), 25))
 
-        return return_list  # Return adjacency list
+        return return_list
 
-    """
-    def find_near_start(self, node_ant, node_now ):
-        coord = (0, 0)
-        dist = 100
-        if self.dic[node_ant] == 0:
-                temp = math.sqrt(math.pow(node_ant[0] + node_now[0], 2) + math.pow(node_ant[1] + node_now[1], 2))
-                if dist > temp:
-                    dist = temp
-                    coord = key
-    """
+    def go_to_next_state(self, ant_pos, next_pos):  # FIX
+        ax = ant_pos[0]
+        ay = ant_pos[1]
+        nx = next_pos[0]
+        ny = next_pos[1]
+        sx = ax
+        sy = ay
+        crash = False
+        inc = 1
+
+        if ax > nx:
+            inc = -1
+
+        while (ax != nx) and (not crash):
+            sx = ax
+            ax += inc
+            if self.dic[(ax, ay)] == 1:
+                crash = True
+            elif self.dic[(ax, ay)] == 2:
+                crash = True
+                sx = ax
+
+        if not crash:
+            sx = ax
+
+        if ay > ny:
+            inc = -1
+        else:
+            inc = 1
+
+        while (ay != ny) and (not crash):
+            sy = ay
+            ay += inc
+            if self.dic[(ax, ay)] == 1:
+                crash = True
+            elif self.dic[(ax, ay)] == 2:
+                sy = ay
+                crash = True
+
+        if not crash:
+            sy = ay
+
+        return sx, sy  
 
     def create_graph(self):  # Creates the most adequate graph for the existing dictionary
         states = []
@@ -77,14 +114,10 @@ class VectorRace:
             state = states.pop()
             result_states = self.expand(state)
 
-            for st in result_states:
-                if (st not in visited) and (st.coord not in self.goal) and (self.dic[st.coord] != 1):
+            for st, cost in result_states:
+                self.graph.add_edge(state, st, cost)
+                if (st not in visited) and (st.coord not in self.goal):
                     states.append(st)
-                if self.dic[st.coord] == 1:
-                    self.graph.add_edge(state, st, 25)
-                    # self.graph.add_edge(st, , 0)
-                else:
-                    self.graph.add_edge(state, st, 1)
 
             visited.append(state)
 
@@ -92,5 +125,4 @@ class VectorRace:
         return self.graph.search_dfs(Node(self.start, (0, 0)), Node(self.goal.pop(), (1, 1)))
 
     def search_bfs_race(self):
-        return self.graph.search_bfs(Node(self.start, (0, 0)), Node(self.goal.pop(), (1, 1)))
-
+        return self.graph.search_bfs(Node(self.start, (0, 0)), Node(self.goal.pop(), (2, -1)))

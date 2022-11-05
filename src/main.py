@@ -7,7 +7,7 @@ def main():
     p = VectorRace("mapa1.txt")
     p.parser()
     p.create_graph()
-    p.graph.graph_draw()
+    print(p.graph)
     print(p.search_bfs_race())
 
 
