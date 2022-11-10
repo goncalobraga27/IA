@@ -1,7 +1,5 @@
 from graph import Graph
 from node import Node
-import math
-
 
 class VectorRace:
 
@@ -61,54 +59,31 @@ class VectorRace:
 
         return return_list
 
-    def go_to_next_state(self, ant_pos, next_pos):  # FIX
-        ax = ant_pos[0]
-        ay = ant_pos[1]
-        nx = next_pos[0]
-        ny = next_pos[1]
-        sx = ax
-        sy = ay
-        crash = False
-        inc = 1
+    def go_to_next_state(self, ant_pos, next_pos):
+        mid_pos = ant_pos
+        if ant_pos[0] < next_pos[0]:
+            mid_pos = (ant_pos[0]+1, ant_pos[1])
+        elif ant_pos[0] > next_pos[0]:
+            mid_pos = (ant_pos[0]-1, ant_pos[1])
+        elif ant_pos[1] < next_pos[1]:
+            mid_pos = (ant_pos[0], ant_pos[1]+1)
+        elif ant_pos[1] > next_pos[1]:
+            mid_pos = (ant_pos[0], ant_pos[1]-1)
 
-        if ax > nx:
-            inc = -1
-
-        while (ax != nx) and (not crash):
-            sx = ax
-            ax += inc
-            if self.dic[(ax, ay)] == 1:
-                crash = True
-            elif self.dic[(ax, ay)] == 2:
-                crash = True
-                sx = ax
-
-        if not crash:
-            sx = ax
-
-        if ay > ny:
-            inc = -1
+        if self.dic[mid_pos] == 1:
+            return ant_pos
+        elif self.dic[mid_pos] == 2:
+            return mid_pos
+        elif mid_pos == next_pos:
+            return next_pos
         else:
-            inc = 1
-
-        while (ay != ny) and (not crash):
-            sy = ay
-            ay += inc
-            if self.dic[(ax, ay)] == 1:
-                crash = True
-            elif self.dic[(ax, ay)] == 2:
-                sy = ay
-                crash = True
-
-        if not crash:
-            sy = ay
-
-        return sx, sy  
+            return self.go_to_next_state(mid_pos, next_pos)
 
     def create_graph(self):  # Creates the most adequate graph for the existing dictionary
         states = []
         visited = []
         states.append(Node(self.start, (0, 0)))
+        visited.append(Node(self.start, (0, 0)))
 
         while len(states) > 0:
             state = states.pop()
@@ -118,8 +93,7 @@ class VectorRace:
                 self.graph.add_edge(state, st, cost)
                 if (st not in visited) and (st.coord not in self.goal):
                     states.append(st)
-
-            visited.append(state)
+                    visited.append(state)
 
     def search_dfs_race(self):
         return self.graph.search_dfs(Node(self.start, (0, 0)), Node(self.goal.pop(), (1, 1)))
