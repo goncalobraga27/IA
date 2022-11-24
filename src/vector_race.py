@@ -8,7 +8,7 @@ class VectorRace:
         self.dic = dict()  # Dictionary for saving the map (Line index, Column index) : Character
         self.graph = Graph(True)
         self.start = None
-        self.goal = set()
+        self.goal = list()
         self.moves = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1)]
 
         #   ----> x
@@ -31,7 +31,7 @@ class VectorRace:
                         self.dic[(i, n_lines)] = 0
                     case 'F':  # 'F' (End) is 2
                         self.dic[(i, n_lines)] = 2
-                        self.goal.add((i, n_lines))
+                        self.goal.append((i, n_lines))
                     case 'P':  # 'P' (Start) is -1
                         self.dic[(i, n_lines)] = -1
                         self.start = (i, n_lines)
@@ -79,6 +79,11 @@ class VectorRace:
         else:
             return self.go_to_next_state(mid_pos, next_pos)
 
+    def acrescentaHeuristica(self):
+        for node in self.graph.nodes:
+            self.graph.m_h[node.coord] = self.graph.calculaHeuristica(node.coord,self.goal[0])
+
+
     def create_graph(self):  # Creates the most adequate graph for the existing dictionary
         states = []
         visited = []
@@ -96,7 +101,10 @@ class VectorRace:
                     visited.append(state)
 
     def search_dfs_race(self):
-        return self.graph.search_dfs(Node(self.start, (0, 0)), Node(self.goal.pop(), (1, 1)))
+        return self.graph.search_dfs(Node(self.start, (0, 0)), Node(self.goal[0], (1, 1)))
 
     def search_bfs_race(self):
-        return self.graph.search_bfs(Node(self.start, (0, 0)), Node(self.goal.pop(), (2, -1)))
+        return self.graph.search_bfs(Node(self.start, (0, 0)), Node(self.goal[0], (2, -1)))
+
+    def search_greedy(self):
+        return self.graph.greedy(Node(self.start, (0, 0)), Node(self.goal[0], (1, 1)))

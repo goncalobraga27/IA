@@ -36,8 +36,7 @@ class Node:
     # Method used to compare two nodes, in this case two nodes are equal if they have the same coordinates,
     # accelerations and speeds
     def __eq__(self, other):
-        return (self.coord[0] == other.coord[0]) and (self.coord[1] == other.coord[1])\
-               and (self.vel[0] == other.vel[0]) and (self.vel[1] == other.vel[1])
+        return (self.coord[0] == other.coord[0]) and (self.coord[1] == other.coord[1]) and (self.vel[0] == other.vel[0]) and (self.vel[1] == other.vel[1])
 
     # Returns the hash of a node
     def __hash__(self):

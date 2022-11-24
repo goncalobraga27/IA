@@ -6,7 +6,6 @@
 import networkx as nx  # Graph handling library required for representation
 import matplotlib.pyplot as plt  # Graph handling library required for representation
 import math  # Library needed to be able to use the math.inf value (infinity)
-import queue
 from node import Node  # Import Node class
 
 
@@ -19,9 +18,10 @@ class Graph:
 
     # Graph constructor
     def __init__(self, directed=False):
-        self.nodes = set()
-        self.directed = directed
-        self.graph = dict()
+        self.nodes = set() # set para armazenar os nodos do grafo
+        self.directed = directed # indica se o grafo é direcionado ou não
+        self.graph = dict() # dicionário para armazenar grafo
+        self.m_h = {}  # dicionário para armazenar heuristica para cada nodo
 
     # Returns the string representation of a graph
     def __str__(self):
@@ -70,6 +70,82 @@ class Graph:
             cost = cost + self.get_arc_cost(path[i-1], path[i])
             i = i + 1
         return cost
+
+    ###############################################
+
+    def calculaHeuristica(self, inicio, fim):
+        return math.sqrt(pow(inicio[0] + fim[0], 2) + pow(inicio[1] + fim[1], 2))
+
+    ###################################################
+    # Devolve vizinhos de um nó
+    ###################################################
+
+    def getNeighbours(self, nodo):
+        lista = []
+        for (adjacente, peso) in self.graph[nodo]:
+            lista.append((adjacente, peso))
+        return lista
+
+
+    #############################################
+    # Pesquisa gulosa
+    #############################################
+
+    def greedy(self, start, end):
+        # open_list é uma lista de nodos visitados, mas com vizinhos
+        # que ainda não foram todos visitados, começa com o  start
+        # closed_list é uma lista de nodos visitados
+        # e todos os seus vizinhos também já o foram
+        open_list = {start}
+        closed_list = set([])
+
+        # parents é um dicionário que mantém o antecessor de um nodo
+        # começa com start
+        parents = {start : start}
+
+        while len(open_list) > 0:
+            n = None
+
+            # encontraf nodo com a menor heuristica
+            for v in open_list:
+                if n == None or self.m_h[v] < self.m_h[n]:
+                    n = v
+
+            if n == None:
+                print('Path does not exist!')
+                return None
+
+            # se o nodo corrente é o destino
+            # reconstruir o caminho a partir desse nodo até ao start
+            # seguindo o antecessor
+            if n == end:
+                reconst_path = []
+
+                while parents[n] != n:
+                    reconst_path.append(n)
+                    n = parents[n]
+
+                reconst_path.append(start)
+
+                reconst_path.reverse()
+
+                return (reconst_path, self.path_cost(reconst_path))
+
+            # para todos os vizinhos  do nodo corrente
+            for (m, weight) in self.getNeighbours(n):
+                # Se o nodo corrente nao esta na open nem na closed list
+                # adiciona-lo à open_list e marcar o antecessor
+                if m not in open_list and m not in closed_list:
+                    open_list.add(m)
+                    parents[m] = n
+
+            # remover n da open_list e adiciona-lo à closed_list
+            # porque todos os seus vizinhos foram inspecionados
+            open_list.remove(n)
+            closed_list.add(n)
+
+        print('Path does not exist!')
+        return None
 
     def search_dfs(self, start, end, path=None, visited=None):
         if path is None:
