@@ -125,7 +125,6 @@ class Graph:
 
         return None
 
-    """
     # Graph search with the Greedy algorithm
     def search_greedy(self, start, end):
         open_list = set()
@@ -140,8 +139,8 @@ class Graph:
                 if (n1 is None) or (self.heuristic[n2] < self.heuristic[n1]):
                     n1 = n2
 
-            if n1 == end:
-                n_aux = end
+            if n1.coord in end:
+                n_aux = n1
                 path = []
 
                 while n_aux is not None:
@@ -149,7 +148,7 @@ class Graph:
                     n_aux = parent[n_aux]
 
                 path.reverse()
-                return path, self.calculate_cost(path)
+                return path, self.path_cost(path)
 
             for (adjacent, weight) in self.graph[n1]:
                 if adjacent not in open_list and adjacent not in closed_list:
@@ -161,6 +160,7 @@ class Graph:
 
         return None
 
+    """
     # Graph search with the A* algorithm
     def search_star_a(self, start, end):
         open_list = set()

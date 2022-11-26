@@ -37,11 +37,9 @@ class VectorRace:
 
             line_index += 1  # Next line
 
-    """
     def graph_heuristic(self, final):
         for n in self.graph.nodes:
-            self.graph.heuristic[n.coord] = math.sqrt(pow(n.coord[0]+final[0], 2) + pow(n.coord[1]+final[1], 2))
-    """
+            self.graph.heuristic[n] = math.sqrt(pow(n.coord[0]+final[0], 2) + pow(n.coord[1]+final[1], 2))
 
     def advance_vertical(self, start_node, final_node, director):
         node = start_node
@@ -285,7 +283,5 @@ class VectorRace:
     def search_bfs_race(self):
         return self.graph.search_bfs(Node(self.start, (0, 0)), self.goal)
 
-    """
     def search_greedy(self):
-        return self.graph.greedy(Node(self.start, (0, 0)), Node(self.goal[0], (1, 1)))
-    """
+        return self.graph.search_greedy(Node(self.start, (0, 0)), self.goal)

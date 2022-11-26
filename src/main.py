@@ -28,7 +28,7 @@ def main():
             print("4-Imprimir arestas do Grafo")
             print("5-BDS")
             print("6-DFS")
-            #print("7-Pesquisa Gulosa")
+            print("7-Pesquisa Gulosa")
             #print("8-Pesquisa A*")
             print("0-Sair")
 
@@ -49,6 +49,12 @@ def main():
                     print()
                 case 6:
                     print(vector_race.search_dfs_race())
+                    print()
+                case 7:
+                    nf = vector_race.goal.pop()
+                    vector_race.goal.add(nf)
+                    vector_race.graph_heuristic(nf)
+                    print(vector_race.search_greedy())
                     print()
                 case 0:
                     option = 0
