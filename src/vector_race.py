@@ -1,4 +1,3 @@
-import graph
 import math
 from graph import Graph
 from node import Node
@@ -38,9 +37,11 @@ class VectorRace:
 
             line_index += 1  # Next line
 
+    """
     def graph_heuristic(self, final):
         for n in self.graph.nodes:
-            self.graph.heuristic[n.coord] = math.sqrt(pow(self.start[0]+final[0], 2) + pow(self.start[1]+final[1], 2))
+            self.graph.heuristic[n.coord] = math.sqrt(pow(n.coord[0]+final[0], 2) + pow(n.coord[1]+final[1], 2))
+    """
 
     def advance_vertical(self, start_node, final_node, director):
         node = start_node
@@ -275,7 +276,7 @@ class VectorRace:
 
             for st, cost in result_states:
                 self.graph.add_edge(state, st, cost)
-                if (st not in visited) and (st.coord not in self.goal):
+                if st not in visited and (st.coord not in self.goal):
                     states.add(st)
 
     def search_dfs_race(self):

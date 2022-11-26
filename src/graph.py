@@ -44,6 +44,13 @@ class Graph:
                 out = out + str(node) + " -> " + str(adjacent) + " weight : " + str(weight) + "\n"
         return out
 
+    # Show nodes
+    def show_nodes(self):
+        out = ""
+        for node in self.nodes:
+            out = out + str(node) + ", "
+        return out
+
     # Return edge cost
     def get_arc_cost(self, node1, node2):
         edges = self.graph[node1]
@@ -119,62 +126,77 @@ class Graph:
         return None
 
     """
-        def greedy(self, start, end):
-            # open_list é uma lista de nodos visitados, mas com vizinhos
-            # que ainda não foram todos visitados, começa com o  start
-            # closed_list é uma lista de nodos visitados
-            # e todos os seus vizinhos também já o foram
-            open_list = {start}
-            closed_list = set([])
+    # Graph search with the Greedy algorithm
+    def search_greedy(self, start, end):
+        open_list = set()
+        open_list.add(start)
+        closed_list = set()
+        parent = dict()
+        parent[start] = None
 
-            # parents é um dicionário que mantém o antecessor de um nodo
-            # começa com start
-            parents = {start: start}
+        while len(open_list) > 0:
+            n1 = None
+            for n2 in open_list:
+                if (n1 is None) or (self.heuristic[n2] < self.heuristic[n1]):
+                    n1 = n2
 
-            while len(open_list) > 0:
-                n = None
+            if n1 == end:
+                n_aux = end
+                path = []
 
-                # encontraf nodo com a menor heuristica
-                for v in open_list:
-                    if n == None or self.m_h[v] < self.m_h[n]:
-                        n = v
+                while n_aux is not None:
+                    path.append(n_aux)
+                    n_aux = parent[n_aux]
 
-                if n == None:
-                    print('Path does not exist!')
-                    return None
+                path.reverse()
+                return path, self.calculate_cost(path)
 
-                # se o nodo corrente é o destino
-                # reconstruir o caminho a partir desse nodo até ao start
-                # seguindo o antecessor
-                if n == end:
-                    reconst_path = []
+            for (adjacent, weight) in self.graph[n1]:
+                if adjacent not in open_list and adjacent not in closed_list:
+                    open_list.add(adjacent)
+                    parent[adjacent] = n1
 
-                    while parents[n] != n:
-                        reconst_path.append(n)
-                        n = parents[n]
+            open_list.remove(n1)
+            closed_list.add(n1)
 
-                    reconst_path.append(start)
+        return None
 
-                    reconst_path.reverse()
+    # Graph search with the A* algorithm
+    def search_star_a(self, start, end):
+        open_list = set()
+        open_list.add(start)
+        closed_list = set()
+        parent = dict()
+        parent[start] = None
+        cost = dict()
+        cost[start] = 0
 
-                    return (reconst_path, self.path_cost(reconst_path))
+        while len(open_list) > 0:
+            n1 = None
+            for n2 in open_list:
+                if (n1 is None) or (self.heuristic[n2] + cost[n2]) < (self.heuristic[n1] + cost[n1]):
+                    n1 = n2
 
-                # para todos os vizinhos  do nodo corrente
-                for (m, weight) in self.getNeighbours(n):
-                    # Se o nodo corrente nao esta na open nem na closed list
-                    # adiciona-lo à open_list e marcar o antecessor
-                    if m not in open_list and m not in closed_list:
-                        open_list.add(m)
-                        parents[m] = n
+            if n1 == end:
+                n_aux = end
+                path = []
 
-                # remover n da open_list e adiciona-lo à closed_list
-                # porque todos os seus vizinhos foram inspecionados
-                open_list.remove(n)
-                closed_list.add(n)
+                while n_aux is not None:
+                    path.append(n_aux)
+                    n_aux = parent[n_aux]
 
-            print('Path does not exist!')
-            return None
+                path.reverse()
+                return path, self.calculate_cost(path)
 
+            for (adjacent, weight) in self.graph[n1]:
+                if adjacent not in open_list and adjacent not in closed_list:
+                    open_list.add(adjacent)
+                    parent[adjacent] = n1
+                    cost[adjacent] = cost[n1] + weight
+
+            open_list.remove(n1)
+            closed_list.add(n1)
+        return None
         """
 
     # Draw the graph
