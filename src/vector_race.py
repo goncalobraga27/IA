@@ -5,7 +5,7 @@ from node import Node
 
 class VectorRace:
 
-    def __init__(self, mapa=None):
+    def __init__(self, mapa=None): # Constructor of the object VectorRace
         self.map_file = mapa
         self.game_map = dict()
         self.graph = Graph(True)
@@ -13,7 +13,7 @@ class VectorRace:
         self.goal = set()
         self.moves = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1)]
 
-    def parser(self):
+    def parser(self): # This function do the parsing of the file .txt that contains the map of the game.
         file = open(self.map_file, "r")  # Open file for read
         lines = file.readlines()  # Read file lines
         file.close()  # Close file
@@ -37,11 +37,11 @@ class VectorRace:
 
             line_index += 1  # Next line
 
-    def graph_heuristic(self, final):
+    def graph_heuristic(self, final): # This function calculate the heuristic for every node of the graph
         for n in self.graph.nodes:
             self.graph.heuristic[n] = math.sqrt(pow(n.coord[0]+final[0], 2) + pow(n.coord[1]+final[1], 2))
 
-    def advance_vertical(self, start_node, final_node, director):
+    def advance_vertical(self, start_node, final_node, director): # This function returns the final node when moving in the vertical
         node = start_node
         if director[1] > 0:
             inc = 1
@@ -60,7 +60,7 @@ class VectorRace:
 
         return final_node
 
-    def advance_horizontal(self, start_node, final_node, director):
+    def advance_horizontal(self, start_node, final_node, director): # This function returns the final node when moving in the horizontal
         node = start_node
         if director[0] > 0:
             inc = 1
@@ -79,7 +79,7 @@ class VectorRace:
 
         return final_node
 
-    def advance_diagonal(self, start_node, final_node, director):
+    def advance_diagonal(self, start_node, final_node, director): # This function returns the final node when moving in the diagonal
         alpha = director[1] / director[0]
         beta = start_node[1] - alpha * start_node[0]
         node = start_node
@@ -226,7 +226,7 @@ class VectorRace:
 
         return final_node
 
-    def try_next_position(self, start_node, final_node):
+    def try_next_position(self, start_node, final_node): # This function checks what is the next position
         director = (final_node[0] - start_node[0], final_node[1] - start_node[1])
 
         if director[0] == 0 and director[1] == 0:
@@ -277,14 +277,14 @@ class VectorRace:
                 if st not in visited and (st.coord not in self.goal):
                     states.add(st)
 
-    def search_dfs_race(self):
+    def search_dfs_race(self): # This function do the dfs search algorithnm for the graph of the race
         return self.graph.search_dfs(Node(self.start, (0, 0)), self.goal)
 
-    def search_bfs_race(self):
+    def search_bfs_race(self): # This function do the bfs search algorithnm for the graph of the race
         return self.graph.search_bfs(Node(self.start, (0, 0)), self.goal)
 
-    def search_greedy(self):
+    def search_greedy(self): # This function do the greedy algorithnm for the graph of the race
         return self.graph.search_greedy(Node(self.start, (0, 0)), self.goal)
 
-    def search_star_a(self):
+    def search_star_a(self): # This function do the a star algorithnm for the graph of the race
         return self.graph.search_star_a(Node(self.start, (0, 0)), self.goal)

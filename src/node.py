@@ -1,6 +1,6 @@
 # Node class
 class Node:
-    # Constructor of a node given the coordinates
+    # Constructor of a node given the coordinates and the velocity
     def __init__(self, n, vel):
         self.coord = n  # n is tuple
         self.vel = vel  # vel is tuple
