@@ -1,13 +1,9 @@
-#############################################
-# Author:                                   #
-# Created date:                             #
-# Last update:                              #
-#############################################
+# Node class
 class Node:
     # Constructor of a node given the coordinates
     def __init__(self, n, vel):
-        self.coord = n # n is tuple
-        self.vel = vel # vel is tuple
+        self.coord = n  # n is tuple
+        self.vel = vel  # vel is tuple
 
     # Returns the string representation of the node to be read 'friendly'
     def __str__(self):
