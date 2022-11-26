@@ -160,7 +160,6 @@ class Graph:
 
         return None
 
-    """
     # Graph search with the A* algorithm
     def search_star_a(self, start, end):
         open_list = set()
@@ -177,8 +176,8 @@ class Graph:
                 if (n1 is None) or (self.heuristic[n2] + cost[n2]) < (self.heuristic[n1] + cost[n1]):
                     n1 = n2
 
-            if n1 == end:
-                n_aux = end
+            if n1.coord in end:
+                n_aux = n1
                 path = []
 
                 while n_aux is not None:
@@ -186,7 +185,7 @@ class Graph:
                     n_aux = parent[n_aux]
 
                 path.reverse()
-                return path, self.calculate_cost(path)
+                return path, self.path_cost(path)
 
             for (adjacent, weight) in self.graph[n1]:
                 if adjacent not in open_list and adjacent not in closed_list:
@@ -197,7 +196,6 @@ class Graph:
             open_list.remove(n1)
             closed_list.add(n1)
         return None
-        """
 
     # Draw the graph
     def graph_draw(self):

@@ -3,7 +3,7 @@ from vector_race import VectorRace
 
 def main():
     print("------------------VECTOR RACE------------------")
-    
+
     vector_race = None
     configured = False
     while not configured:
@@ -19,6 +19,9 @@ def main():
     if configured:
         print("Mapa configurado")
         vector_race.create_graph()
+        nf = vector_race.goal.pop()
+        vector_race.goal.add(nf)
+        vector_race.graph_heuristic(nf)
 
         option = -1
         while option != 0:
@@ -29,7 +32,7 @@ def main():
             print("5-BDS")
             print("6-DFS")
             print("7-Pesquisa Gulosa")
-            #print("8-Pesquisa A*")
+            print("8-Pesquisa A*")
             print("0-Sair")
 
             print("Intruza a sua opção: ", end="")
@@ -51,10 +54,10 @@ def main():
                     print(vector_race.search_dfs_race())
                     print()
                 case 7:
-                    nf = vector_race.goal.pop()
-                    vector_race.goal.add(nf)
-                    vector_race.graph_heuristic(nf)
                     print(vector_race.search_greedy())
+                    print()
+                case 8:
+                    print(vector_race.search_star_a())
                     print()
                 case 0:
                     option = 0

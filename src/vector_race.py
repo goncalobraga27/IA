@@ -285,3 +285,6 @@ class VectorRace:
 
     def search_greedy(self):
         return self.graph.search_greedy(Node(self.start, (0, 0)), self.goal)
+
+    def search_star_a(self):
+        return self.graph.search_star_a(Node(self.start, (0, 0)), self.goal)
