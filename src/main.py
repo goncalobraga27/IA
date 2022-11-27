@@ -27,9 +27,9 @@ def main():
         while option != 0:
             print("1-Imprimir Grafo")
             print("2-Desenhar Grafo")
-            print("3-Imprimir  nodos do Grafo")
+            print("3-Imprimir nodos do Grafo")
             print("4-Imprimir arestas do Grafo")
-            print("5-BDS")
+            print("5-BFS")
             print("6-DFS")
             print("7-Pesquisa Gulosa")
             print("8-Pesquisa A*")

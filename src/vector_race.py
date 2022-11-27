@@ -180,7 +180,7 @@ class VectorRace:
                     p_x = math.trunc(node_temp[0])
                     pos_x = math.ceil(node_temp[0])
                 else:
-                    p_x = math.ceil(node_temp[1])
+                    p_x = math.ceil(node_temp[0])
                     pos_x = math.trunc(node_temp[0])
                 pos_y = round(node_temp[1])
                 pos = (pos_x, pos_y)
