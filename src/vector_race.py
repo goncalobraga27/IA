@@ -5,15 +5,16 @@ from node import Node
 
 class VectorRace:
 
-    def __init__(self, mapa=None): # Constructor of the object VectorRace
+    def __init__(self, mapa=None):  # Constructor of the object VectorRace
         self.map_file = mapa
+        self.show_map = list()
         self.game_map = dict()
         self.graph = Graph(True)
         self.start = None
         self.goal = set()
         self.moves = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1)]
 
-    def parser(self): # This function do the parsing of the file .txt that contains the map of the game.
+    def parser(self):  # This function do the parsing of the file .txt that contains the map of the game.
         file = open(self.map_file, "r")  # Open file for read
         lines = file.readlines()  # Read file lines
         file.close()  # Close file
@@ -37,11 +38,59 @@ class VectorRace:
 
             line_index += 1  # Next line
 
-    def graph_heuristic(self, final): # This function calculate the heuristic for every node of the graph
-        for n in self.graph.nodes:
-            self.graph.heuristic[n] = math.sqrt(pow(n.coord[0]+final[0], 2) + pow(n.coord[1]+final[1], 2))
+    def show_parser(self):  # This function do the parsing of the file .txt that contains the map of the game.
+        file = open(self.map_file, "r")  # Open file for read
+        lines = file.readlines()  # Read file lines
+        file.close()  # Close file
+        line_index = 0  # Counter for the number of lines
 
-    def advance_vertical(self, start_node, final_node, director): # This function returns the final node when moving in the vertical
+        for line in lines:  # Go through all the lines
+            self.show_map.append(list())
+            for c in line:  # Go through all the characters in a line
+                match c:
+                    case '#':  # '#' (Wall)
+                        self.show_map[line_index].append('#')
+                    case '-':  # '-' (Track)
+                        self.show_map[line_index].append('-')
+                    case 'F':  # 'F' (End)
+                        self.show_map[line_index].append('F')
+                    case 'P':  # 'P' (Start)
+                        self.show_map[line_index].append('P')
+
+            line_index += 1  # Next line
+
+    def print_map(self, path=None):
+        if path is None:
+            path = []
+
+        y_max = len(self.show_map)
+        tam = len(path)
+        i = 0
+        for node in path:
+            if i != 0 and i != tam-1:
+                self.show_map[y_max - node.coord[1]][node.coord[0] - 1] = 'C'
+            i += 1
+
+        out = ""
+        for line in self.show_map:
+            for c in line:
+                out = out + c + " "
+            out = out + "\n"
+
+        tam = len(path)
+        i = 0
+        for node in path:
+            if i != 0 and i != tam - 1:
+                self.show_map[y_max - node.coord[1]][node.coord[0] - 1] = '-'
+            i += 1
+        return out
+
+    def graph_heuristic(self, final):  # This function calculate the heuristic for every node of the graph
+        for n in self.graph.nodes:
+            self.graph.heuristic[n] = math.sqrt(pow(n.coord[0] + final[0], 2) + pow(n.coord[1] + final[1], 2))
+
+    def advance_vertical(self, start_node, final_node,
+                         director):  # This function returns the final node when moving in the vertical
         node = start_node
         if director[1] > 0:
             inc = 1
@@ -60,7 +109,8 @@ class VectorRace:
 
         return final_node
 
-    def advance_horizontal(self, start_node, final_node, director): # This function returns the final node when moving in the horizontal
+    def advance_horizontal(self, start_node, final_node,
+                           director):  # This function returns the final node when moving in the horizontal
         node = start_node
         if director[0] > 0:
             inc = 1
@@ -79,7 +129,8 @@ class VectorRace:
 
         return final_node
 
-    def advance_diagonal(self, start_node, final_node, director): # This function returns the final node when moving in the diagonal
+    def advance_diagonal(self, start_node, final_node,
+                         director):  # This function returns the final node when moving in the diagonal
         alpha = director[1] / director[0]
         beta = start_node[1] - alpha * start_node[0]
         node = start_node
@@ -226,7 +277,7 @@ class VectorRace:
 
         return final_node
 
-    def try_next_position(self, start_node, final_node): # This function checks what is the next position
+    def try_next_position(self, start_node, final_node):  # This function checks what is the next position
         director = (final_node[0] - start_node[0], final_node[1] - start_node[1])
 
         if director[0] == 0 and director[1] == 0:
@@ -277,14 +328,14 @@ class VectorRace:
                 if st not in visited and (st.coord not in self.goal):
                     states.add(st)
 
-    def search_dfs_race(self): # This function do the dfs search algorithnm for the graph of the race
+    def search_dfs_race(self):  # This function do the dfs search algorithnm for the graph of the race
         return self.graph.search_dfs(Node(self.start, (0, 0)), self.goal)
 
-    def search_bfs_race(self): # This function do the bfs search algorithnm for the graph of the race
+    def search_bfs_race(self):  # This function do the bfs search algorithnm for the graph of the race
         return self.graph.search_bfs(Node(self.start, (0, 0)), self.goal)
 
-    def search_greedy(self): # This function do the greedy algorithnm for the graph of the race
+    def search_greedy(self):  # This function do the greedy algorithnm for the graph of the race
         return self.graph.search_greedy(Node(self.start, (0, 0)), self.goal)
 
-    def search_star_a(self): # This function do the a star algorithnm for the graph of the race
+    def search_star_a(self):  # This function do the a star algorithnm for the graph of the race
         return self.graph.search_star_a(Node(self.start, (0, 0)), self.goal)

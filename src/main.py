@@ -12,6 +12,7 @@ def main():
         try:
             vector_race = VectorRace(map_file)
             vector_race.parser()
+            vector_race.show_parser()
             configured = True
         except:
             print("Mapa inválido")
@@ -25,40 +26,45 @@ def main():
 
         option = -1
         while option != 0:
-            print("1-Imprimir Grafo")
-            print("2-Desenhar Grafo")
-            print("3-Imprimir nodos do Grafo")
-            print("4-Imprimir arestas do Grafo")
-            print("5-BFS")
-            print("6-DFS")
-            print("7-Pesquisa Gulosa")
-            print("8-Pesquisa A*")
+            print("1-Imprimir mapa")
+            print("2-Imprimir Grafo")
+            print("3-Desenhar Grafo")
+            print("4-Imprimir nodos do Grafo")
+            print("5-Imprimir arestas do Grafo")
+            print("6-BFS")
+            print("7-DFS")
+            print("8-Pesquisa Gulosa")
+            print("9-Pesquisa A*")
             print("0-Sair")
 
             print("Intruza a sua opção: ", end="")
             option = int(input())
             match option:
                 case 1:
-                    print(vector_race.graph)
+                    print(vector_race.print_map())
                 case 2:
-                    print(vector_race.graph.graph_draw())
+                    print(vector_race.graph)
                 case 3:
+                    vector_race.graph.graph_draw()
+                case 4:
                     print(vector_race.graph.show_nodes())
                     print()
-                case 4:
-                    print(vector_race.graph.show_edges())
                 case 5:
+                    print(vector_race.graph.show_edges())
+                case 6:
                     print(vector_race.search_bfs_race())
                     print()
-                case 6:
+                case 7:
                     print(vector_race.search_dfs_race())
                     print()
-                case 7:
+                case 8:
                     print(vector_race.search_greedy())
                     print()
-                case 8:
-                    print(vector_race.search_star_a())
+                case 9:
+                    path, cost = vector_race.search_star_a()
+                    print(path, cost)
                     print()
+                    print(vector_race.print_map(path))
                 case 0:
                     option = 0
                 case _:

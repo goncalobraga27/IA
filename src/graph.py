@@ -1,7 +1,7 @@
 import networkx as nx  # Graph handling library required for representation
 import matplotlib.pyplot as plt  # Graph handling library required for representation
 import math  # Library needed to be able to use the math.sqrt function
-
+import scipy as sp
 
 # Graph class
 class Graph:
