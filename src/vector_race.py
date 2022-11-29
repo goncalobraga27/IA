@@ -5,8 +5,7 @@ from node import Node
 
 class VectorRace:
 
-    def __init__(self, mapa=None):  # Constructor of the object VectorRace
-        self.map_file = mapa
+    def __init__(self):  # Constructor of the object VectorRace
         self.show_map = list()
         self.game_map = dict()
         self.graph = Graph(True)
@@ -14,8 +13,10 @@ class VectorRace:
         self.goal = set()
         self.moves = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1)]
 
-    def parser(self):  # This function do the parsing of the file .txt that contains the map of the game.
-        file = open(self.map_file, "r")  # Open file for read
+    @staticmethod
+    def parser(circuit_file):  # This function do the parsing of the file .txt that contains the map of the game.
+        race = VectorRace()
+        file = open(circuit_file, "r")  # Open file for read
         lines = file.readlines()  # Read file lines
         file.close()  # Close file
         line_index = 1  # Counter for the number of lines
@@ -25,21 +26,23 @@ class VectorRace:
             line_length = len(line)
             for i in range(line_length):  # Go through all the characters in a line
                 match line[i]:
-                    case '#':  # '#' (Wall)
-                        self.game_map[(i + 1, line_index)] = '#'
+                    case 'X':  # '#' (Wall)
+                        race.game_map[(i + 1, line_index)] = 'X'
                     case '-':  # '-' (Track)
-                        self.game_map[(i + 1, line_index)] = '-'
+                        race.game_map[(i + 1, line_index)] = '-'
                     case 'F':  # 'F' (End)
-                        self.goal.add((i + 1, line_index))
-                        self.game_map[(i + 1, line_index)] = 'F'
+                        race.goal.add((i + 1, line_index))
+                        race.game_map[(i + 1, line_index)] = 'F'
                     case 'P':  # 'P' (Start)
-                        self.start = (i + 1, line_index)
-                        self.game_map[(i + 1, line_index)] = 'P'
+                        race.start = (i + 1, line_index)
+                        race.game_map[(i + 1, line_index)] = 'P'
 
             line_index += 1  # Next line
 
-    def show_parser(self):  # This function do the parsing of the file .txt that contains the map of the game.
-        file = open(self.map_file, "r")  # Open file for read
+        return race
+
+    def show_parser(self, circuit_file):  # This function do the parsing of the file .txt that contains the map of the game.
+        file = open(circuit_file, "r")  # Open file for read
         lines = file.readlines()  # Read file lines
         file.close()  # Close file
         line_index = 0  # Counter for the number of lines
@@ -48,8 +51,8 @@ class VectorRace:
             self.show_map.append(list())
             for c in line:  # Go through all the characters in a line
                 match c:
-                    case '#':  # '#' (Wall)
-                        self.show_map[line_index].append('#')
+                    case 'X':  # '#' (Wall)
+                        self.show_map[line_index].append('X')
                     case '-':  # '-' (Track)
                         self.show_map[line_index].append('-')
                     case 'F':  # 'F' (End)
@@ -99,7 +102,7 @@ class VectorRace:
 
         while node != final_node:
             node_temp = (node[0], node[1] + inc)
-            if self.game_map[node_temp] == '#':
+            if self.game_map[node_temp] == 'X':
                 final_node = node
             elif self.game_map[node_temp] == 'F':
                 node = node_temp
@@ -119,7 +122,7 @@ class VectorRace:
 
         while node != final_node:
             node_temp = (node[0] + inc, node[1])
-            if self.game_map[node_temp] == '#':
+            if self.game_map[node_temp] == 'X':
                 final_node = node
             elif self.game_map[node_temp] == 'F':
                 node = node_temp
@@ -182,7 +185,7 @@ class VectorRace:
                     pos_x = math.trunc(node_temp[0])
                     pos_y = math.ceil(node_temp[1])
                     pos = (pos_x, pos_y)
-                    if self.game_map[pos] == '#':
+                    if self.game_map[pos] == 'X':
                         node = previous_node
                         final_node = previous_node
                     elif self.game_map[pos] == 'F':
@@ -192,7 +195,7 @@ class VectorRace:
                         pos_x = math.ceil(node_temp[0])
                         pos_y = math.trunc(node_temp[1])
                         pos = (pos_x, pos_y)
-                        if self.game_map[pos] == '#':
+                        if self.game_map[pos] == 'X':
                             node = previous_node
                             final_node = previous_node
                         elif self.game_map[pos] == 'F':
@@ -206,7 +209,7 @@ class VectorRace:
                     pos_x = math.ceil(node_temp[0])
                     pos_y = math.ceil(node_temp[1])
                     pos = (pos_x, pos_y)
-                    if self.game_map[pos] == '#':
+                    if self.game_map[pos] == 'X':
                         node = previous_node
                         final_node = previous_node
                     elif self.game_map[pos] == 'F':
@@ -216,7 +219,7 @@ class VectorRace:
                         pos_x = math.trunc(node_temp[0])
                         pos_y = math.trunc(node_temp[1])
                         pos = (pos_x, pos_y)
-                        if self.game_map[pos] == '#':
+                        if self.game_map[pos] == 'X':
                             node = previous_node
                             final_node = previous_node
                         elif self.game_map[pos] == 'F':
@@ -235,7 +238,7 @@ class VectorRace:
                     pos_x = math.trunc(node_temp[0])
                 pos_y = round(node_temp[1])
                 pos = (pos_x, pos_y)
-                if self.game_map[pos] == '#':
+                if self.game_map[pos] == 'X':
                     node = previous_node
                     final_node = previous_node
                 elif self.game_map[pos] == 'F':
@@ -254,7 +257,7 @@ class VectorRace:
                     p_y = math.ceil(node_temp[1])
                     pos_y = math.trunc(node_temp[1])
                 pos = (pos_x, pos_y)
-                if self.game_map[pos] == '#':
+                if self.game_map[pos] == 'X':
                     node = previous_node
                     final_node = previous_node
                 elif self.game_map[pos] == 'F':
@@ -265,7 +268,7 @@ class VectorRace:
                     node = node_temp
             else:
                 pos = (round(node_temp[0]), round(node_temp[1]))
-                if self.game_map[pos] == '#':
+                if self.game_map[pos] == 'X':
                     node = previous_node
                     final_node = previous_node
                 elif self.game_map[pos] == 'F':

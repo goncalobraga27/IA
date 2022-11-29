@@ -7,18 +7,18 @@ def main():
     vector_race = None
     configured = False
     while not configured:
-        print("Insira ficheiro com o mapa do jogo: ", end="")
+        print("Insira ficheiro com o circuito do jogo: ", end="")
         map_file = str(input())
         try:
-            vector_race = VectorRace(map_file)
-            vector_race.parser()
-            vector_race.show_parser()
+            vector_race = VectorRace.parser(map_file)
+            vector_race.show_parser(map_file)
             configured = True
         except:
-            print("Mapa inválido")
+            print("Circuito inválido")
 
     if configured:
-        print("Mapa configurado")
+        print("Circuito configurado")
+        print()
         vector_race.create_graph()
         nf = vector_race.goal.pop()
         vector_race.goal.add(nf)
@@ -26,7 +26,7 @@ def main():
 
         option = -1
         while option != 0:
-            print("1-Imprimir mapa")
+            print("1-Imprimir circuito")
             print("2-Imprimir Grafo")
             print("3-Desenhar Grafo")
             print("4-Imprimir nodos do Grafo")
