@@ -280,7 +280,7 @@ class VectorRace:
 
         return final_node
 
-    def try_next_position(self, start_node, final_node):  # This function checks what is the next position
+    def try_next_position(self, start_node, final_node):  # This function returns the next position of the new state
         director = (final_node[0] - start_node[0], final_node[1] - start_node[1])
 
         if director[0] == 0 and director[1] == 0:
