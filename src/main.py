@@ -52,14 +52,20 @@ def main():
                 case 5:
                     print(vector_race.graph.show_edges())
                 case 6:
-                    print(vector_race.search_bfs_race())
+                    path, cost = vector_race.search_bfs_race()
+                    print(path, cost)
                     print()
+                    print(vector_race.print_map(path))
                 case 7:
-                    print(vector_race.search_dfs_race())
+                    path, cost = vector_race.search_dfs_race()
+                    print(path, cost)
                     print()
+                    print(vector_race.print_map(path))
                 case 8:
-                    print(vector_race.search_greedy())
+                    path, cost = vector_race.search_greedy()
+                    print(path, cost)
                     print()
+                    print(vector_race.print_map(path))
                 case 9:
                     path, cost = vector_race.search_star_a()
                     print(path, cost)
