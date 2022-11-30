@@ -41,7 +41,7 @@ class Graph:
         out = ""
         for node in self.graph.keys():
             for (adjacent, weight) in self.graph[node]:
-                out = out + str(node) + " -> " + str(adjacent) + " weight : " + str(weight) + "\n"
+                out = out + str(node) + " -> " + str(adjacent) + " cost : " + str(weight) + "\n"
         return out
 
     # Show nodes
