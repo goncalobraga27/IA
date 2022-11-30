@@ -70,7 +70,7 @@ class VectorRace:
         tam = len(path)
         i = 0
         for node in path:
-            if i != 0 and i != tam-1:
+            if (i != 0) and (i != tam-1) and (node.coord != self.start):
                 self.show_map[y_max - node.coord[1]][node.coord[0] - 1] = 'C'
             i += 1
 
@@ -83,7 +83,7 @@ class VectorRace:
         tam = len(path)
         i = 0
         for node in path:
-            if i != 0 and i != tam - 1:
+            if (i != 0) and (i != tam-1) and (node.coord != self.start):
                 self.show_map[y_max - node.coord[1]][node.coord[0] - 1] = '-'
             i += 1
         return out
