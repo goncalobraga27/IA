@@ -92,6 +92,10 @@ class VectorRace:
         for n in self.graph.nodes:
             self.graph.heuristic[n] = math.sqrt(pow(n.coord[0] + final[0], 2) + pow(n.coord[1] + final[1], 2))
 
+    def graph_heuristic_Wall(self, wall1, wall2):    # This function calculate the heuristic_Wall for every node of the graph
+        for n in self.graph.nodes:
+            self.graph_heuristic[n] = abs(math.sqrt(pow(n.coord[0] + wall1[0], 2) + pow(n.coord[1] + wall1[1], 2)) - math.sqrt(pow(n.coord[0] + wall2[0], 2) + pow(n.coord[1] + wall2[1], 2)))
+
     def advance_vertical(self, start_node, final_node,
                          director):  # This function returns the final node when moving in the vertical
         node = start_node
