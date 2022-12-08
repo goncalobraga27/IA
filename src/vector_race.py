@@ -10,7 +10,7 @@ class VectorRace:
         self.game_map = dict()
         self.graph = Graph(True)
         self.start = None
-        self.goal = set()
+        self.goal = list()
         self.moves = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1)]
 
     @staticmethod
@@ -31,7 +31,7 @@ class VectorRace:
                     case '-':  # '-' (Track)
                         race.game_map[(i + 1, line_index)] = '-'
                     case 'F':  # 'F' (End)
-                        race.goal.add((i + 1, line_index))
+                        race.goal.append((i + 1, line_index))
                         race.game_map[(i + 1, line_index)] = 'F'
                     case 'P':  # 'P' (Start)
                         race.start = (i + 1, line_index)
@@ -41,7 +41,8 @@ class VectorRace:
 
         return race
 
-    def show_parser(self, circuit_file):  # This function do the parsing of the file .txt that contains the map of the game.
+    def show_parser(self, circuit_file):  # This function do the parsing of the file .txt that contains the map of
+        # the game.
         file = open(circuit_file, "r")  # Open file for read
         lines = file.readlines()  # Read file lines
         file.close()  # Close file
@@ -88,13 +89,26 @@ class VectorRace:
             i += 1
         return out
 
-    def graph_heuristic(self, final):  # This function calculate the heuristic for every node of the graph
+    def graph_heuristic(self):  # This function calculate the heuristic for every node of the graph
+        final = self.goal[0]
         for n in self.graph.nodes:
             self.graph.heuristic[n] = math.sqrt(pow(n.coord[0] + final[0], 2) + pow(n.coord[1] + final[1], 2))
 
-    def graph_heuristic_Wall(self, wall1, wall2):    # This function calculate the heuristic_Wall for every node of the graph
+    def find_close_walls(self, node):
+        vn1 = (-node.vel[1], node.vel[0])
+        vn2 = (node.vel[1], -node.vel[0])
+
+        wall1 = self.try_next_position(node.coord, (node.coord[0] + 100*vn1[0], node.coord[1] + 100*vn1[1]))
+        wall2 = self.try_next_position(node.coord, (node.coord[0] + 100*vn2[0], node.coord[1] + 100*vn2[1]))
+
+        return wall1, wall2
+
+    # This function calculate the heuristic_wall for every node of the graph
+    def graph_heuristic_wall(self):
         for n in self.graph.nodes:
-            self.graph_heuristic[n] = abs(math.sqrt(pow(n.coord[0] + wall1[0], 2) + pow(n.coord[1] + wall1[1], 2)) - math.sqrt(pow(n.coord[0] + wall2[0], 2) + pow(n.coord[1] + wall2[1], 2)))
+            wall1, wall2 = self.find_close_walls(n)
+            self.graph.heuristic[n] = abs(math.sqrt(pow(n.coord[0] + wall1[0], 2) + pow(n.coord[1] + wall1[1], 2))
+                                          - math.sqrt(pow(n.coord[0] + wall2[0], 2) + pow(n.coord[1] + wall2[1], 2)))
 
     def advance_vertical(self, start_node, final_node,
                          director):  # This function returns the final node when moving in the vertical
@@ -335,14 +349,14 @@ class VectorRace:
                 if st not in visited and (st.coord not in self.goal):
                     states.add(st)
 
-    def search_dfs_race(self):  # This function do the dfs search algorithnm for the graph of the race
+    def search_dfs_race(self):  # This function do the dfs search algorithm for the graph of the race
         return self.graph.search_dfs(Node(self.start, (0, 0)), self.goal)
 
-    def search_bfs_race(self):  # This function do the bfs search algorithnm for the graph of the race
+    def search_bfs_race(self):  # This function do the bfs search algorithm for the graph of the race
         return self.graph.search_bfs(Node(self.start, (0, 0)), self.goal)
 
-    def search_greedy(self):  # This function do the greedy algorithnm for the graph of the race
+    def search_greedy(self):  # This function do the greedy algorithm for the graph of the race
         return self.graph.search_greedy(Node(self.start, (0, 0)), self.goal)
 
-    def search_star_a(self):  # This function do the a star algorithnm for the graph of the race
+    def search_star_a(self):  # This function do the "a star" algorithm for the graph of the race
         return self.graph.search_star_a(Node(self.start, (0, 0)), self.goal)

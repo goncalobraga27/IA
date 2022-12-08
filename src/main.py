@@ -20,9 +20,8 @@ def main():
         print("Circuito configurado")
         print()
         vector_race.create_graph()
-        nf = vector_race.goal.pop()
-        vector_race.goal.add(nf)
-        vector_race.graph_heuristic(nf)
+        # vector_race.graph_heuristic()
+        vector_race.graph_heuristic_wall()
 
         option = -1
         while option != 0:
