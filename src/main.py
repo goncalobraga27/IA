@@ -23,13 +23,35 @@ def main():
         print("Com quantos jogadores quer jogar?")
         print("1-Um jogador")
         print("2-Dois jogadores")
-        optionPlayers = int(input())
-        if optionPlayers == 1:
-            # vector_race.graph_heuristic()
-            vector_race.graph_heuristic_wall()
+        print("Introduza a sua opção: ", end="")
+
+        option_players = int(input())
+        while option_players != 1 and option_players != 2:
+            print("Opção errada")
+            print("Intoduza a sua opação: ", end="")
+            option_players = int(input())
+
+        if option_players == 1:
+            print()
+            print("Qual é a heurística que deseja utilizar?")
+            print("1-Distância para a meta")
+            print("2-Encontra-se bem posicionado na pista")
+            print("Introduza a sua opção: ", end="")
+
+            heuristic = int(input())
+            while heuristic != 1 and heuristic != 2:
+                print("Opção errada")
+                print("Intoduza a sua opação: ", end="")
+                heuristic = int(input())
+
+            if heuristic == 1:
+                vector_race.graph_heuristic()
+            else:
+                vector_race.graph_heuristic_wall()
 
             option = -1
             while option != 0:
+                print()
                 print("1-Imprimir circuito")
                 print("2-Imprimir Grafo")
                 print("3-Desenhar Grafo")
@@ -80,8 +102,7 @@ def main():
                     case _:
                         print("Opção invalida.")
                         print()
-        #else:
-            #Vai levar aqui a parte do menu para dois jogadores
+        # elif option_players == 2: # Vai levar aqui a parte do menu para dois jogadores
 
 
 
