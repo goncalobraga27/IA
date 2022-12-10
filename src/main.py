@@ -88,12 +88,12 @@ def main():
                         print()
                         print(vector_race.print_map(path))
                     case 8:
-                        path, cost = vector_race.search_greedy_Distance_Heuristic()
+                        path, cost = vector_race.search_greedy()
                         print(path, cost)
                         print()
                         print(vector_race.print_map(path))
                     case 9:
-                        path, cost = vector_race.search_star_a_Distance_Heuristic()
+                        path, cost = vector_race.search_star_a()
                         print(path, cost)
                         print()
                         print(vector_race.print_map(path))
@@ -103,7 +103,6 @@ def main():
                         print("Opção invalida.")
                         print()
         # elif option_players == 2: # Vai levar aqui a parte do menu para dois jogadores
-
 
 
 if __name__ == "__main__":
