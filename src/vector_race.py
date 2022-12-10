@@ -357,8 +357,14 @@ class VectorRace:
     def search_bfs_race(self):  # This function do the bfs search algorithm for the graph of the race
         return self.graph.search_bfs(Node(self.start, (0, 0)), self.goal)
 
-    def search_greedy(self):  # This function do the greedy algorithm for the graph of the race
-        return self.graph.search_greedy(Node(self.start, (0, 0)), self.goal)
+    def search_greedy_Distance_Heuristic(self):  # This function do the greedy algorithm for the graph of the race
+        return self.graph.search_greedy_Distance_Heuristic(Node(self.start, (0, 0)), self.goal)
 
-    def search_star_a(self):  # This function do the "a star" algorithm for the graph of the race
-        return self.graph.search_star_a(Node(self.start, (0, 0)), self.goal)
+    def search_star_a_Distance_Heuristic(self):  # This function do the "a star" algorithm for the graph of the race
+        return self.graph.search_star_a_Distance_Heuristic(Node(self.start, (0, 0)), self.goal)
+
+    def search_greedy_Wall_Heuristic(self):  # This function do the greedy algorithm for the graph of the race
+        return self.graph.search_greedy_Distance_Heuristic(Node(self.start, (0, 0)), self.goal)
+
+    def search_star_a_Wall_Heuristic(self):  # This function do the "a star" algorithm for the graph of the race
+        return self.graph.search_star_a_Distance_Heuristic(Node(self.start, (0, 0)), self.goal)
