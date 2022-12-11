@@ -102,7 +102,8 @@ def main():
                     case _:
                         print("Opção invalida.")
                         print()
-        # elif option_players == 2: # Vai levar aqui a parte do menu para dois jogadores
+        elif option_players == 2:
+            vector_race.two_players(4)
 
 
 if __name__ == "__main__":

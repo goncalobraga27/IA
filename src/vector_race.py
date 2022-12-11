@@ -92,7 +92,7 @@ class VectorRace:
     def graph_heuristic(self):  # This function calculate the heuristic for every node of the graph
         final = self.goal[0]
         for n in self.graph.nodes:
-            self.graph.heuristic[n] = math.sqrt(pow(n.coord[0] + final[0], 2) + pow(n.coord[1] + final[1], 2))
+            self.graph.heuristic[n] = math.sqrt(pow(n.coord[0] - final[0], 2) + pow(n.coord[1] - final[1], 2))
 
     def find_close_walls(self, node):
         vn1 = (-node.vel[1], node.vel[0])
@@ -362,3 +362,101 @@ class VectorRace:
 
     def search_star_a(self):  # This function do the "a star" algorithm for the graph of the race
         return self.graph.search_star_a(Node(self.start, (0, 0)), self.goal)
+
+    #
+    def utility_function(self, pos1, pos2):
+        final = self.goal[0]
+        d1 = math.sqrt(pow(pos1[0] - final[0], 2) + pow(pos1[1] - final[1], 2))
+        d2 = math.sqrt(pow(pos2[0] - final[0], 2) + pow(pos2[1] - final[1], 2))
+        return d1 - d2
+
+    def minimax(self, cur_depth, target_depth, p1, p2, min_turn):
+        if min_turn:
+            state = p1
+        else:
+            state = p2
+
+        if min_turn:
+            best = None, +math.inf
+        else:
+            best = None, -math.inf
+
+        if cur_depth == target_depth or p1.coord in self.goal or p2.coord in self.goal:
+            final = self.goal[0]
+            if p1.coord in self.goal:
+                score = -1000
+            elif p2.coord in self.goal:
+                score = +1000
+            else:
+                score = self.utility_function(p1.coord, p2.coord)
+            return None, score
+
+        for next_state, cost in self.graph.graph[state]:
+            if min_turn:
+                p1 = next_state
+            else:
+                p2 = next_state
+
+            s = self.minimax(cur_depth + 1, target_depth, p1, p2, not min_turn)
+            score = next_state, s[1]
+
+            if min_turn:
+                if score[1] < best[1]:
+                    best = score
+            else:
+                if score[1] > best[1]:
+                    best = score
+
+        return best
+
+    def first_player_turn(self, depth, p1, p2):
+        if p1.coord in self.goal or p2.coord in self.goal:
+            return p1
+
+        print(self.print_map())
+
+        next_state = (self.minimax(0, depth, p1, p2, True))[0]
+
+        y_max = len(self.show_map)
+        self.show_map[y_max - next_state.coord[1]][next_state.coord[0] - 1] = '1'
+        i = input()
+
+        return next_state
+
+    def second_player_turn(self, depth, p1, p2):
+        if p1.coord in self.goal or p2.coord in self.goal:
+            return p2
+
+        print(self.print_map())
+
+        next_state = (self.minimax(0, depth, p1, p2, False))[0]
+
+        y_max = len(self.show_map)
+        self.show_map[y_max - next_state.coord[1]][next_state.coord[0] - 1] = '2'
+        i = input()
+
+        return next_state
+
+    def two_players(self, depth):
+        bot1 = Node(self.start, (0, 0))
+        bot2 = Node(self.start, (0, 0))
+
+        if depth > 0:
+            for st in (self.graph.graph[bot1]):
+                bot1 = st[0]
+                break
+
+            y_max = len(self.show_map)
+            self.show_map[y_max - bot1.coord[1]][bot1.coord[0] - 1] = '1'
+
+            while bot1.coord not in self.goal and bot2.coord not in self.goal:
+                bot2 = self.second_player_turn(depth, bot1, bot2)
+                bot1 = self.first_player_turn(depth, bot1, bot2)
+
+            if bot2.coord in self.goal:
+                print("Jogador 2 ganhou")
+            else:
+                print("Jogador 1 ganhou")
+
+
+
