@@ -1,8 +1,28 @@
 from vector_race import VectorRace
 
 
+def chose_heuristic(vector_race):
+    print()
+    print("-------------------------------------------------")
+    print("Qual é a heurística que deseja utilizar?")
+    print("1-Distância para a meta")
+    print("2-Encontra-se bem posicionado na pista")
+    print("Introduza a sua opção: ", end="")
+    heuristic = int(input())
+    while heuristic != 1 and heuristic != 2:
+        print("Opção errada")
+        print("Intoduza a sua opação: ", end="")
+        heuristic = int(input())
+    print("-------------------------------------------------")
+
+    if heuristic == 1:
+        vector_race.graph_heuristic()
+    else:
+        vector_race.graph_heuristic_wall()
+
+
 def main():
-    print("------------------VECTOR RACE------------------")
+    print("------------------VECTOR RACE--------------------")
 
     vector_race = None
     configured = False
@@ -18,36 +38,20 @@ def main():
 
     if configured:
         print("Circuito configurado")
+        print("-------------------------------------------------")
 
         print()
-        vector_race.create_graph()
-        print("Com quantos jogadores quer jogar?")
-        print("1-Um jogador")
-        print("2-Dois jogadores")
-        print("Introduza a sua opção: ", end="")
+        print("Introduza o número de jogadores (max 4): ", end="")
         option_players = int(input())
-        while option_players != 1 and option_players != 2:
+        while 1 > option_players > 4:
+            print()
             print("Opção errada")
-            print("Intoduza a sua opação: ", end="")
+            print("Intoduza a sua opção: ", end="")
             option_players = int(input())
 
+        vector_race.create_graph()
+
         if option_players == 1:
-
-            print()
-            print("Qual é a heurística que deseja utilizar?")
-            print("1-Distância para a meta")
-            print("2-Encontra-se bem posicionado na pista")
-            print("Introduza a sua opção: ", end="")
-            heuristic = int(input())
-            while heuristic != 1 and heuristic != 2:
-                print("Opção errada")
-                print("Intoduza a sua opação: ", end="")
-                heuristic = int(input())
-
-            if heuristic == 1:
-                vector_race.graph_heuristic()
-            else:
-                vector_race.graph_heuristic_wall()
 
             option = -1
             while option != 0:
@@ -88,11 +92,13 @@ def main():
                         print()
                         print(vector_race.print_map(path))
                     case 8:
+                        chose_heuristic(vector_race)
                         path, cost = vector_race.search_greedy()
                         print(path, cost)
                         print()
                         print(vector_race.print_map(path))
                     case 9:
+                        chose_heuristic(vector_race)
                         path, cost = vector_race.search_star_a()
                         print(path, cost)
                         print()
@@ -102,7 +108,7 @@ def main():
                     case _:
                         print("Opção invalida.")
                         print()
-        elif option_players == 2:
+        else:
             vector_race.two_players()
 
 

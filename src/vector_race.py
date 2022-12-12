@@ -410,6 +410,10 @@ class VectorRace:
 
         return next_state
 
+    # plano de contigencia
+    #
+
+
     def two_players(self):
         bot1 = Node(self.start, (0, 0))
         bot2 = Node(self.start, (0, 0))
