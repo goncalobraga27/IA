@@ -384,6 +384,7 @@ class VectorRace:
         y_max = len(self.show_map)
         self.show_map[y_max - next_state.coord[1]][next_state.coord[0] - 1] = '1'
         print(self.print_map())
+        self.show_map[y_max - next_state.coord[1]][next_state.coord[0] - 1] = '-'
 
         i = input()
 
@@ -403,6 +404,7 @@ class VectorRace:
         y_max = len(self.show_map)
         self.show_map[y_max - next_state.coord[1]][next_state.coord[0] - 1] = '2'
         print(self.print_map())
+        self.show_map[y_max - next_state.coord[1]][next_state.coord[0] - 1] = '-'
 
         i = input()
 
@@ -421,6 +423,8 @@ class VectorRace:
         self.show_map[y_max - bot1.coord[1]][bot1.coord[0] - 1] = '1'
         print()
         print(self.print_map())
+        self.show_map[y_max - bot1.coord[1]][bot1.coord[0] - 1] = '-'
+
 
         i = input()
 
