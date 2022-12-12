@@ -1,5 +1,5 @@
 from vector_race import VectorRace
-
+from tkinter import *
 
 def chose_heuristic(vector_race):
     print()
@@ -110,6 +110,26 @@ def main():
                         print()
         else:
             vector_race.two_players()
+def dealWithMap(janelaInitial):
+    vector_race = VectorRace()
+    nomeFile = vMapa.get()
+    try:
+        vector_race.parser(nomeFile)
+        vector_race.show_parser(nomeFile)
+        Label(janelaInitial, text="Circuito configurado").place(x=220, y=450)
+    except:
+        Label(janelaInitial, text="Circuito inválido").place(x=220, y=450)
+
+janelaInitial = Tk()
+janelaInitial.geometry("600x600")
+janelaInitial.title("VECTOR RACE")
+Label(janelaInitial, text="VECTOR RACE", font=('calibre', 15, 'bold'), anchor=W).place(x=190, y=200, width=500)
+Label(janelaInitial, text="Insira ficheiro com o circuito do jogo: ", background="#dde",
+      foreground="#009", anchor=W, font=('calibre', 10, 'normal')).place(x=150, y=300, width=250)
+vMapa = Entry(janelaInitial)
+vMapa.place(x=150, y=320, width=250, height=20)
+Button(janelaInitial, text="Procurar", command=lambda: dealWithMap(janelaInitial)).place(x=220, y=370)
+janelaInitial.mainloop()
 
 
 if __name__ == "__main__":
