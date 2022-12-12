@@ -1,6 +1,8 @@
 import math
 from graph import Graph
 from node import Node
+import matplotlib.pyplot as plt
+from matplotlib.patches import Rectangle
 
 
 class VectorRace:
@@ -441,5 +443,24 @@ class VectorRace:
         else:
             print("Jogador 1 ganhou")
 
+    def draw_circuit(self, node):
+        fig, ax = plt.subplots()
+        ax.set_yscale('linear')
+        ax.set_xscale('linear')
+        plt.xlim(0, len(self.show_map[0]))
+        plt.ylim(0, len(self.show_map))
+
+        for i in range(len(self.show_map)):
+            plt.axhline(y=i + 1, linewidth=0.5, color='#d3d3d3')
+            for j in range(len(self.show_map[i])):
+                plt.axvline(x=j + 1, linewidth=0.5, color='#d3d3d3')
+                if self.show_map[i][j] == 'X':
+                    ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='#d3d3d3'))
+                if self.show_map[i][j] == 'F':
+                    ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='black'))
+
+        y_max = len(self.show_map)
+        plt.scatter(node[0] - 1 + 0.5, y_max - node[1] + 0.5, color='red')
+        plt.show()
 
 
