@@ -8,7 +8,7 @@ class VectorRace:
     def __init__(self):  # Constructor of the object VectorRace
         self.show_map = list()
         self.game_map = dict()
-        self.graph = Graph(True)
+        self.graph = None
         self.start = None
         self.goal = list()
         self.moves = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 0), (0, 1), (1, -1), (1, 0), (1, 1)]
@@ -33,7 +33,7 @@ class VectorRace:
                     case 'F':  # 'F' (End)
                         race.goal.append((i + 1, line_index))
                         race.game_map[(i + 1, line_index)] = 'F'
-                    case 'P':  # 'P' (Start)
+                    case 'P':  # '1' (Start 1)
                         race.start = (i + 1, line_index)
                         race.game_map[(i + 1, line_index)] = 'P'
 
@@ -108,7 +108,8 @@ class VectorRace:
         for n in self.graph.nodes:
             if n.coord not in self.goal:
                 wall1, wall2 = self.find_close_walls(n)
-                self.graph.heuristic[n] = abs(math.sqrt(pow(n.coord[0] + wall1[0], 2) + pow(n.coord[1] + wall1[1], 2)) - math.sqrt(pow(n.coord[0] + wall2[0], 2) + pow(n.coord[1] + wall2[1], 2)))
+                self.graph.heuristic[n] = abs(math.sqrt(pow(n.coord[0] - wall1[0], 2) + pow(n.coord[1] - wall1[1], 2)) -
+                                              math.sqrt(pow(n.coord[0] - wall2[0], 2) + pow(n.coord[1] - wall2[1], 2)))
             else:
                 self.graph.heuristic[n] = 0
 
@@ -335,11 +336,15 @@ class VectorRace:
 
         return return_list
 
-    def create_graph(self):  # Creates the most adequate graph for the existing dictionary
+    def create_graph(self, node=None):  # Creates the most adequate graph for the existing dictionary
+        if node is None:
+            node = Node(self.start, (0, 0))
+        self.graph = Graph(True)
+
         states = set()
         visited = set()
-        states.add(Node(self.start, (0, 0)))
-        visited.add(Node(self.start, (0, 0)))
+        states.add(node)
+        visited.add(node)
 
         while len(states) > 0:
             state = states.pop()
@@ -360,103 +365,73 @@ class VectorRace:
     def search_greedy(self):  # This function do the greedy algorithm for the graph of the race
         return self.graph.search_greedy(Node(self.start, (0, 0)), self.goal)
 
-    def search_star_a(self):  # This function do the "a star" algorithm for the graph of the race
-        return self.graph.search_star_a(Node(self.start, (0, 0)), self.goal)
+    def search_star_a(self, node=None):  # This function do the "a star" algorithm for the graph of the race
+        if node is None:
+            node = Node(self.start, (0, 0))
+        return self.graph.search_star_a(node, self.goal)
 
-    #
-    def utility_function(self, pos1, pos2):
-        final = self.goal[0]
-        d1 = math.sqrt(pow(pos1[0] - final[0], 2) + pow(pos1[1] - final[1], 2))
-        d2 = math.sqrt(pow(pos2[0] - final[0], 2) + pow(pos2[1] - final[1], 2))
-        return d1 - d2
-
-    def minimax(self, cur_depth, target_depth, p1, p2, min_turn):
-        if min_turn:
-            state = p1
-        else:
-            state = p2
-
-        if min_turn:
-            best = None, +math.inf
-        else:
-            best = None, -math.inf
-
-        if cur_depth == target_depth or p1.coord in self.goal or p2.coord in self.goal:
-            final = self.goal[0]
-            if p1.coord in self.goal:
-                score = -1000
-            elif p2.coord in self.goal:
-                score = +1000
-            else:
-                score = self.utility_function(p1.coord, p2.coord)
-            return None, score
-
-        for next_state, cost in self.graph.graph[state]:
-            if min_turn:
-                p1 = next_state
-            else:
-                p2 = next_state
-
-            s = self.minimax(cur_depth + 1, target_depth, p1, p2, not min_turn)
-            score = next_state, s[1]
-
-            if min_turn:
-                if score[1] < best[1]:
-                    best = score
-            else:
-                if score[1] > best[1]:
-                    best = score
-
-        return best
-
-    def first_player_turn(self, depth, p1, p2):
+    def first_player_turn(self, p1, p2):
         if p1.coord in self.goal or p2.coord in self.goal:
             return p1
 
-        print(self.print_map())
-
-        next_state = (self.minimax(0, depth, p1, p2, True))[0]
+        self.game_map[p2.coord] = 'X'
+        self.create_graph(p1)
+        self.graph_heuristic()
+        path, cost = self.search_star_a(p1)
+        self.game_map[p2.coord] = '-'
+        next_state = path[1]
 
         y_max = len(self.show_map)
         self.show_map[y_max - next_state.coord[1]][next_state.coord[0] - 1] = '1'
+        print(self.print_map())
+
         i = input()
 
         return next_state
 
-    def second_player_turn(self, depth, p1, p2):
+    def second_player_turn(self, p1, p2):
         if p1.coord in self.goal or p2.coord in self.goal:
             return p2
 
-        print(self.print_map())
-
-        next_state = (self.minimax(0, depth, p1, p2, False))[0]
+        self.game_map[p1.coord] = 'X'
+        self.create_graph(p2)
+        self.graph_heuristic()
+        path, cost = self.search_star_a(p2)
+        self.game_map[p1.coord] = '-'
+        next_state = path[1]
 
         y_max = len(self.show_map)
         self.show_map[y_max - next_state.coord[1]][next_state.coord[0] - 1] = '2'
+        print(self.print_map())
+
         i = input()
 
         return next_state
 
-    def two_players(self, depth):
+    def two_players(self):
         bot1 = Node(self.start, (0, 0))
         bot2 = Node(self.start, (0, 0))
 
-        if depth > 0:
-            for st in (self.graph.graph[bot1]):
-                bot1 = st[0]
-                break
+        # first move
+        self.graph_heuristic()
+        path, cost = self.search_star_a(bot1)
+        bot1 = path[1]
 
-            y_max = len(self.show_map)
-            self.show_map[y_max - bot1.coord[1]][bot1.coord[0] - 1] = '1'
+        y_max = len(self.show_map)
+        self.show_map[y_max - bot1.coord[1]][bot1.coord[0] - 1] = '1'
+        print()
+        print(self.print_map())
 
-            while bot1.coord not in self.goal and bot2.coord not in self.goal:
-                bot2 = self.second_player_turn(depth, bot1, bot2)
-                bot1 = self.first_player_turn(depth, bot1, bot2)
+        i = input()
 
-            if bot2.coord in self.goal:
-                print("Jogador 2 ganhou")
-            else:
-                print("Jogador 1 ganhou")
+        while bot1.coord not in self.goal and bot2.coord not in self.goal:
+            bot2 = self.second_player_turn(bot1, bot2)
+            bot1 = self.first_player_turn(bot1, bot2)
+
+        if bot2.coord in self.goal:
+            print("Jogador 2 ganhou")
+        else:
+            print("Jogador 1 ganhou")
 
 
 

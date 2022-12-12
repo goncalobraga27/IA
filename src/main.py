@@ -18,13 +18,13 @@ def main():
 
     if configured:
         print("Circuito configurado")
+
         print()
         vector_race.create_graph()
         print("Com quantos jogadores quer jogar?")
         print("1-Um jogador")
         print("2-Dois jogadores")
         print("Introduza a sua opção: ", end="")
-
         option_players = int(input())
         while option_players != 1 and option_players != 2:
             print("Opção errada")
@@ -32,12 +32,12 @@ def main():
             option_players = int(input())
 
         if option_players == 1:
+
             print()
             print("Qual é a heurística que deseja utilizar?")
             print("1-Distância para a meta")
             print("2-Encontra-se bem posicionado na pista")
             print("Introduza a sua opção: ", end="")
-
             heuristic = int(input())
             while heuristic != 1 and heuristic != 2:
                 print("Opção errada")
@@ -103,7 +103,7 @@ def main():
                         print("Opção invalida.")
                         print()
         elif option_players == 2:
-            vector_race.two_players(4)
+            vector_race.two_players()
 
 
 if __name__ == "__main__":
