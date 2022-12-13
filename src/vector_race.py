@@ -3,6 +3,8 @@ from graph import Graph
 from node import Node
 import matplotlib.pyplot as plt
 from matplotlib.patches import Rectangle
+import imageio.v2 as imageio
+import os
 
 
 class VectorRace:
@@ -73,7 +75,7 @@ class VectorRace:
         tam = len(path)
         i = 0
         for node in path:
-            if (i != 0) and (i != tam-1) and (node.coord != self.start):
+            if (i != 0) and (i != tam - 1) and (node.coord != self.start):
                 self.show_map[y_max - node.coord[1]][node.coord[0] - 1] = 'C'
             i += 1
 
@@ -86,10 +88,10 @@ class VectorRace:
         tam = len(path)
         i = 0
         for node in path:
-            if (i != 0) and (i != tam-1) and (node.coord != self.start):
+            if (i != 0) and (i != tam - 1) and (node.coord != self.start):
                 self.show_map[y_max - node.coord[1]][node.coord[0] - 1] = '-'
             i += 1
-        return out
+        return out.rstrip(out[-1])
 
     def graph_heuristic(self):  # This function calculate the heuristic for every node of the graph
         final = self.goal[0]
@@ -100,8 +102,8 @@ class VectorRace:
         vn1 = (-node.vel[1], node.vel[0])
         vn2 = (node.vel[1], -node.vel[0])
 
-        wall1 = self.try_next_position(node.coord, (node.coord[0] + 100*vn1[0], node.coord[1] + 100*vn1[1]))
-        wall2 = self.try_next_position(node.coord, (node.coord[0] + 100*vn2[0], node.coord[1] + 100*vn2[1]))
+        wall1 = self.try_next_position(node.coord, (node.coord[0] + 100 * vn1[0], node.coord[1] + 100 * vn1[1]))
+        wall2 = self.try_next_position(node.coord, (node.coord[0] + 100 * vn2[0], node.coord[1] + 100 * vn2[1]))
 
         return wall1, wall2
 
@@ -358,98 +360,100 @@ class VectorRace:
                 if st not in visited and (st.coord not in self.goal):
                     states.add(st)
 
-    def search_dfs_race(self):  # This function do the dfs search algorithm for the graph of the race
-        return self.graph.search_dfs(Node(self.start, (0, 0)), self.goal)
+    def search_dfs_race(self, node=None):  # This function do the dfs search algorithm for the graph of the race
+        if node is None:
+            node = Node(self.start, (0, 0))
+        return self.graph.search_dfs(node, self.goal)
 
-    def search_bfs_race(self):  # This function do the bfs search algorithm for the graph of the race
-        return self.graph.search_bfs(Node(self.start, (0, 0)), self.goal)
+    def search_bfs_race(self, node=None):  # This function do the bfs search algorithm for the graph of the race
+        if node is None:
+            node = Node(self.start, (0, 0))
+        return self.graph.search_bfs(node, self.goal)
 
-    def search_greedy(self):  # This function do the greedy algorithm for the graph of the race
-        return self.graph.search_greedy(Node(self.start, (0, 0)), self.goal)
+    def search_greedy(self, node=None):  # This function do the greedy algorithm for the graph of the race
+        if node is None:
+            node = Node(self.start, (0, 0))
+        return self.graph.search_greedy(node, self.goal)
 
     def search_star_a(self, node=None):  # This function do the "a star" algorithm for the graph of the race
         if node is None:
             node = Node(self.start, (0, 0))
         return self.graph.search_star_a(node, self.goal)
 
-    def first_player_turn(self, p1, p2):
-        if p1.coord in self.goal or p2.coord in self.goal:
-            return p1
+    def verify_end_simulation(self, players):
+        for node in players:
+            if node.coord in self.goal:
+                return True
+        return False
 
-        self.game_map[p2.coord] = 'X'
-        self.create_graph(p1)
-        self.graph_heuristic()
-        path, cost = self.search_star_a(p1)
-        self.game_map[p2.coord] = '-'
-        next_state = path[1]
-
-        y_max = len(self.show_map)
-        self.show_map[y_max - next_state.coord[1]][next_state.coord[0] - 1] = '1'
-        print(self.print_map())
-        self.show_map[y_max - next_state.coord[1]][next_state.coord[0] - 1] = '-'
-
-        i = input()
-
-        return next_state
-
-    def second_player_turn(self, p1, p2):
-        if p1.coord in self.goal or p2.coord in self.goal:
-            return p2
-
-        self.game_map[p1.coord] = 'X'
-        self.create_graph(p2)
-        self.graph_heuristic()
-        path, cost = self.search_star_a(p2)
-        self.game_map[p1.coord] = '-'
-        next_state = path[1]
-
-        y_max = len(self.show_map)
-        self.show_map[y_max - next_state.coord[1]][next_state.coord[0] - 1] = '2'
-        print(self.print_map())
-        self.show_map[y_max - next_state.coord[1]][next_state.coord[0] - 1] = '-'
-
-        i = input()
-
-        return next_state
-
-    # plano de contigencia
-    #
-
-
-    def two_players(self):
-        bot1 = Node(self.start, (0, 0))
-        bot2 = Node(self.start, (0, 0))
-
-        # first move
-        self.graph_heuristic()
-        path, cost = self.search_star_a(bot1)
-        bot1 = path[1]
-
-        y_max = len(self.show_map)
-        self.show_map[y_max - bot1.coord[1]][bot1.coord[0] - 1] = '1'
-        print()
-        print(self.print_map())
-        self.show_map[y_max - bot1.coord[1]][bot1.coord[0] - 1] = '-'
-
-
-        i = input()
-
-        while bot1.coord not in self.goal and bot2.coord not in self.goal:
-            bot2 = self.second_player_turn(bot1, bot2)
-            bot1 = self.first_player_turn(bot1, bot2)
-
-        if bot2.coord in self.goal:
-            print("Jogador 2 ganhou")
+    def get_next_state(self, player, num, choices):
+        choice = choices[num]
+        path = None
+        match choice:
+            case 1:
+                self.create_graph(player)
+                path, cost = self.search_dfs_race(player)
+            case 2:
+                self.create_graph(player)
+                path, cost = self.search_bfs_race(player)
+            case 3:
+                self.create_graph(player)
+                self.graph_heuristic()
+                path, cost = self.search_greedy(player)
+            case 4:
+                self.create_graph(player)
+                self.graph_heuristic()
+                path, cost = self.search_star_a(player)
+        if path is not None:
+            next_state = path[1]
         else:
-            print("Jogador 1 ganhou")
+            next_state = None  # plano de contigencia
+        return next_state
 
-    def draw_circuit(self, node):
+    def simulate_turn(self, players, choices):
+        for i in range(len(players)):
+            players[i] = self.get_next_state(players[i], i, choices)
+            self.game_map[players[i].coord] = 'X'
+
+        for i in range(len(players)):
+            self.game_map[players[i].coord] = '-'
+
+        return players
+
+    def get_winner(self, players):
+        for i in range(len(players)):
+            if players[i].coord in self.goal:
+                return i+1
+        return None
+
+    def repr_map(self, players):
+        #y_max = len(self.show_map)
+        #i = 1
+        #for node in players:
+            #self.show_map[y_max - node.coord[1]][node.coord[0] - 1] = chr(i)
+            #i += 1
+        self.draw_circuit_points(players)
+        #for node in players:
+            #self.show_map[y_max - node.coord[1]][node.coord[0] - 1] = '-'
+
+    def multiplayer(self, choices):
+        players = list()
+        for c in choices:
+            players.append(Node(self.start, (0, 0)))
+
+        while not self.verify_end_simulation(players):
+            players = self.simulate_turn(players, choices)
+            self.repr_map(players)
+            #input()
+
+        return self.get_winner(players)
+
+    def draw_circuit(self, node, ret=False):
         fig, ax = plt.subplots()
-        ax.set_yscale('linear')
-        ax.set_xscale('linear')
         plt.xlim(0, len(self.show_map[0]))
         plt.ylim(0, len(self.show_map))
-        plt.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False, labelright=False, labelbottom=False)
+        plt.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                        labelright=False, labelbottom=False)
 
         for i in range(len(self.show_map)):
             plt.axhline(y=i + 1, linewidth=0.5, color='#d3d3d3')
@@ -461,6 +465,56 @@ class VectorRace:
                     ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='black'))
 
         plt.scatter(node[0] - 0.5, node[1] - 0.5, color='red')
+        if not ret:
+            plt.show()
+
+    def draw_circuit_points(self, nodes):
+        fig, ax = plt.subplots()
+        plt.xlim(0, len(self.show_map[0]))
+        plt.ylim(0, len(self.show_map))
+        plt.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                        labelright=False, labelbottom=False)
+
+        for i in range(len(self.show_map)):
+            plt.axhline(y=i + 1, linewidth=0.5, color='#d3d3d3')
+            for j in range(len(self.show_map[i])):
+                plt.axvline(x=j + 1, linewidth=0.5, color='#d3d3d3')
+                if self.show_map[i][j] == 'X':
+                    ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='#d3d3d3'))
+                if self.show_map[i][j] == 'F':
+                    ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='black'))
+
+        colors = ['red', 'purple', 'green', 'orange']
+        i = 0
+        for node in nodes:
+            plt.scatter(node.coord[0] - 0.5, node.coord[1] - 0.5, color=colors[i])
+            i += 1
         plt.show()
+
+    def draw_circuit_path(self, path):
+        filenames = []
+        i = 0
+        for node in path:
+            # plot the line chart
+            self.draw_circuit(node.coord, ret=True)
+
+            # create file name and append it to a list
+            filename = f'{i}.png'
+            filenames.append(filename)
+
+            # save frame
+            plt.savefig(filename)
+            plt.close()
+            i += 1
+
+        # build gif
+        with imageio.get_writer('mygif.gif', mode='I') as writer:
+            for filename in filenames:
+                image = imageio.imread(filename)
+                writer.append_data(image)
+
+        # Remove files
+        for filename in set(filenames):
+            os.remove(filename)
 
 
