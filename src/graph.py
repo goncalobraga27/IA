@@ -41,15 +41,15 @@ class Graph:
         out = ""
         for node in self.graph.keys():
             for (adjacent, weight) in self.graph[node]:
-                out = out + str(node) + " -> " + str(adjacent) + " cost : " + str(weight) + "\n"
-        return out
+                out = out + "(" + str(node) + " -> " + str(adjacent) + ", Cost=" + str(weight) + ")\n"
+        return out.rstrip(out[-1])
 
     # Show nodes
     def show_nodes(self):
         out = ""
         for node in self.nodes:
-            out = out + str(node) + ", "
-        return out
+            out = out + str(node) + "\n"
+        return out.rstrip(out[-1])
 
     # Return edge cost
     def get_arc_cost(self, node1, node2):

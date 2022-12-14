@@ -7,11 +7,11 @@ class Node:
 
     # Returns the string representation of the node to be read 'friendly'
     def __str__(self):
-        return str(self.coord) + "," + str(self.vel)
+        return "(Pos=" + str(self.coord) + ", Vel=" + str(self.vel) + ")"
 
     # Returns 'official' representation of the object
     def __repr__(self):
-        return "(" + str(self.coord) + ", " + str(self.vel) + ")"
+        return "(Pos=" + str(self.coord) + ", Vel=" + str(self.vel) + ")"
 
     # Get the coordinates of a node
     def get_coord(self):
