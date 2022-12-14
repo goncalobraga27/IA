@@ -392,22 +392,65 @@ class VectorRace:
         match choice:
             case 1:
                 self.create_graph(player)
-                path, cost = self.search_dfs_race(player)
+                self.create_graph(player)
+                found = False
+                for node in self.graph.nodes:
+                    if node.coord in self.goal:
+                        found = True
+                        break
+
+                if found:
+                    path, cost = self.search_dfs_race(player)
+                else:
+                    path = None
             case 2:
                 self.create_graph(player)
-                path, cost = self.search_bfs_race(player)
+                found = False
+                for node in self.graph.nodes:
+                    if node.coord in self.goal:
+                        found = True
+                        break
+
+                if found:
+                    path, cost = self.search_bfs_race(player)
+                else:
+                    path = None
             case 3:
                 self.create_graph(player)
                 self.graph_heuristic()
-                path, cost = self.search_greedy(player)
+                found = False
+                for node in self.graph.nodes:
+                    if node.coord in self.goal:
+                        found = True
+                        break
+
+                if found:
+                    path, cost = self.search_greedy(player)
+                else:
+                    path = None
             case 4:
                 self.create_graph(player)
                 self.graph_heuristic()
-                path, cost = self.search_star_a(player)
+                found = False
+                for node in self.graph.nodes:
+                    if node.coord in self.goal:
+                        found = True
+                        break
+
+                if found:
+                    path, cost = self.search_star_a(player)
+                else:
+                    path = None
         if path is not None:
             next_state = path[1]
         else:
-            next_state = None  # plano de contigencia
+            next_state = None # plano de contigencia
+            next_states = self.graph.graph[player]
+            for edge in next_states:
+                state = edge[0]
+                if abs(state.vel[0]) <= abs(player.vel[0]) and abs(state.vel[1]) <= abs(player.vel[0]):
+                    next_state = state
+
         return next_state
 
     def simulate_turn(self, players, choices):
@@ -421,10 +464,13 @@ class VectorRace:
         return players
 
     def get_winner(self, players):
+        ret = -1
         for i in range(len(players)):
             if players[i].coord in self.goal:
-                return i+1
-        return None
+                if ret != -1:
+                    return 0
+                ret = i+1
+        return ret
 
     def repr_map(self, players):
         #y_max = len(self.show_map)
@@ -444,7 +490,7 @@ class VectorRace:
         while not self.verify_end_simulation(players):
             players = self.simulate_turn(players, choices)
             self.repr_map(players)
-            input()
+            #input()
 
         return self.get_winner(players)
 
