@@ -444,7 +444,7 @@ class VectorRace:
         while not self.verify_end_simulation(players):
             players = self.simulate_turn(players, choices)
             self.repr_map(players)
-            #input()
+            input()
 
         return self.get_winner(players)
 
@@ -463,6 +463,8 @@ class VectorRace:
                     ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='#d3d3d3'))
                 if self.show_map[i][j] == 'F':
                     ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='black'))
+                if self.show_map[i][j] == 'P':
+                    ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='#FF1493'))
 
         plt.scatter(node[0] - 0.5, node[1] - 0.5, color='red')
         if not ret:
@@ -483,6 +485,8 @@ class VectorRace:
                     ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='#d3d3d3'))
                 if self.show_map[i][j] == 'F':
                     ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='black'))
+                if self.show_map[i][j] == 'P':
+                    ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='#FF1493'))
 
         colors = ['red', 'purple', 'green', 'orange']
         i = 0
