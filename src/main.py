@@ -1,6 +1,5 @@
 from vector_race import VectorRace
-from tkinter import *
-
+from interface import ui
 
 def chose_heuristic(vector_race):
     print("\n-------------------------------------------------")
@@ -120,16 +119,8 @@ def other_options(vector_race, choices):
 
 
 def main():
-    janelaInitial = Tk()
-    janelaInitial.geometry("600x600")
-    janelaInitial.title("VECTOR RACE")
-    Label(janelaInitial, text="VECTOR RACE", font=('calibre', 15, 'bold'), anchor=W).place(x=190, y=200, width=500)
-    Label(janelaInitial, text="Insira ficheiro com o circuito do jogo: ", background="#dde",
-          foreground="#009", anchor=W, font=('calibre', 10, 'normal')).place(x=150, y=300, width=250)
-    vMapa = Entry(janelaInitial)
-    vMapa.place(x=150, y=320, width=250, height=20)
-    Button(janelaInitial, text="Procurar", command=lambda: dealWithMap(janelaInitial, vMapa)).place(x=220, y=370)
-    janelaInitial.mainloop()
+    userInterface = ui()
+    userInterface.interface()
     print("------------------VECTOR RACE--------------------")
     vector_race = None
     configured = False
@@ -144,15 +135,6 @@ def main():
             print("Circuito inválido")
 
     if configured:
-        janelaNumberPlayers = Tk()
-        janelaNumberPlayers.geometry("600x600")
-        janelaNumberPlayers.title("VECTOR RACE")
-        Label(janelaNumberPlayers, text="Introduza o número de jogadores (max 4): ", background="#dde",
-              foreground="#009", anchor=W, font=('calibre', 10, 'normal')).place(x=150, y=300, width=300)
-        eNumberPlayers = Entry(janelaNumberPlayers)
-        eNumberPlayers.place(x=150, y=320, width=250, height=20)
-        Button(janelaNumberPlayers, text="Confirmar", command=lambda: dealWithNumberPlayers(janelaNumberPlayers, eNumberPlayers)).place(x=220, y=370)
-        janelaNumberPlayers.mainloop()
         print("Circuito configurado")
         print("-------------------------------------------------")
         print("Introduza o número de jogadores (max 4): ", end="")
@@ -174,45 +156,6 @@ def main():
                     inp = invalid_option()
                 save_choices.append(inp)
             other_options(vector_race, save_choices)
-
-
-def dealWithMap(janelaInitial, vMapa):
-    vector_race = VectorRace()
-    nomeFile = vMapa.get()
-    try:
-        vector_race.parser(nomeFile)
-        vector_race.show_parser(nomeFile)
-        Label(janelaInitial, text="Circuito configurado").place(x=220, y=450)
-    except:
-        Label(janelaInitial, text="Circuito inválido").place(x=220, y=450)
-
-def dealWithNumberPlayers(janelaNumberPlayers, eNumberPlayers):
-    option_players = eNumberPlayers.get()
-    if option_players == "1":
-        numberPlayers = 1
-    elif option_players == "2":
-        numberPlayers = 2
-    elif option_players == "3":
-        numberPlayers = 3
-    elif option_players == "4":
-        numberPlayers = 4
-    else:
-        numberPlayers = 20 #É de propósito para dar erro
-    if 1 < numberPlayers and numberPlayers > 4:
-        Label(janelaNumberPlayers, text="Valor Inválido").place(x=220, y=450)
-
-"""
-janelaInitial = Tk()
-janelaInitial.geometry("600x600")
-janelaInitial.title("VECTOR RACE")
-Label(janelaInitial, text="VECTOR RACE", font=('calibre', 15, 'bold'), anchor=W).place(x=190, y=200, width=500)
-Label(janelaInitial, text="Insira ficheiro com o circuito do jogo: ", background="#dde",
-      foreground="#009", anchor=W, font=('calibre', 10, 'normal')).place(x=150, y=300, width=250)
-vMapa = Entry(janelaInitial)
-vMapa.place(x=150, y=320, width=250, height=20)
-Button(janelaInitial, text="Procurar", command=lambda: dealWithMap(janelaInitial)).place(x=220, y=370)
-janelaInitial.mainloop()
-"""
 
 if __name__ == "__main__":
     main()
