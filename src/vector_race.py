@@ -392,7 +392,6 @@ class VectorRace:
         match choice:
             case 1:
                 self.create_graph(player)
-                self.create_graph(player)
                 found = False
                 for node in self.graph.nodes:
                     if node.coord in self.goal:

@@ -85,6 +85,7 @@ def option1(vector_race):
                 print(cost, end="\n\n")
                 print(vector_race.print_map(path))
                 vector_race.draw_circuit_path(path)
+                print("Um gif com o caminho tomado pelo carro foi gerado")
             case 8:
                 print()
                 path, cost = vector_race.search_dfs_race()
@@ -92,6 +93,7 @@ def option1(vector_race):
                 print(cost, end="\n\n")
                 print(vector_race.print_map(path))
                 vector_race.draw_circuit_path(path)
+                print("Um gif com o caminho tomado pelo carro foi gerado")
             case 9:
                 chose_heuristic(vector_race)
                 print()
@@ -100,13 +102,16 @@ def option1(vector_race):
                 print(cost, end="\n\n")
                 print(vector_race.print_map(path))
                 vector_race.draw_circuit_path(path)
+                print("Um gif com o caminho tomado pelo caro foi gerado")
             case 10:
                 chose_heuristic(vector_race)
+                print()
                 path, cost = vector_race.search_star_a()
                 print(path, end=", Cost=")
                 print(cost, end="\n\n")
                 print(vector_race.print_map(path))
                 vector_race.draw_circuit_path(path)
+                print("Um gif com o caminho tomado pelo carro foi gerado")
             case 0:
                 option = 0
             case _:
@@ -139,7 +144,7 @@ def main():
         print("-------------------------------------------------")
         print("Introduza o número de jogadores (max 4): ", end="")
         option_players = int(input())
-        while 1 > option_players > 4:
+        while option_players < 1 or option_players  > 4:
             option_players = invalid_option()
 
         vector_race.create_graph()
@@ -152,7 +157,7 @@ def main():
                 chose_player_algorithm(i + 1)
                 print("Introduza a sua opção: ", end="")
                 inp = int(input())
-                while 1 > inp > 4:
+                while inp < 1 or inp > 4:
                     inp = invalid_option()
                 save_choices.append(inp)
             other_options(vector_race, save_choices)
