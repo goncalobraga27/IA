@@ -186,7 +186,7 @@ def config_map(window,map_file,num):
     finally:
         window.destroy()
 
-def show_results(path, cost):
+def show_results(path, cost, num_nodes):
     out = "Caminho:\n"
     i = 0
     for node in path:
@@ -197,6 +197,7 @@ def show_results(path, cost):
         else:
             i += 1
     out = out + "\nCusto: " + str(cost)
+    out = out + "\nNúmero de nós visitados: " + str(num_nodes)
 
     window = tkinter.Tk()
     window.geometry("480x680")
@@ -211,43 +212,43 @@ def show_results(path, cost):
     window.mainloop()
 
 def search_dfs():
-    path, cost = race.search_dfs_race()
+    path, cost, num_nodes = race.search_dfs_race()
     race.draw_circuit_path(path) # mudar para mostrar no matplotlib
-    show_results(path, cost)
+    show_results(path, cost, num_nodes)
 
 def search_bfs():
-    path, cost = race.search_bfs_race()
+    path, cost, num_nodes = race.search_bfs_race()
     race.draw_circuit_path(path)
-    show_results(path, cost)
+    show_results(path, cost, num_nodes)
 
 def uniform_cost():
-    path, cost = race.search_uniform_cost()
+    path, cost , num_nodes = race.search_uniform_cost()
     race.draw_circuit_path(path)
-    show_results(path, cost)
+    show_results(path, cost, num_nodes)
 
 def greedy_fst():
     race.graph_heuristic()
-    path, cost = race.search_greedy()
+    path, cost, num_nodes = race.search_greedy()
     race.draw_circuit_path(path)
-    show_results(path, cost)
+    show_results(path, cost, num_nodes)
 
 def greedy_snd():
     race.graph_heuristic_wall()
-    path, cost = race.search_greedy()
+    path, cost, num_nodes = race.search_greedy()
     race.draw_circuit_path(path)
-    show_results(path, cost)
+    show_results(path, cost, num_nodes)
 
 def a_star_fst():
     race.graph_heuristic()
-    path, cost = race.search_star_a()
+    path, cost, num_nodes = race.search_star_a()
     race.draw_circuit_path(path)
-    show_results(path, cost)
+    show_results(path, cost, num_nodes)
 
 def a_star_snd():
     race.graph_heuristic_wall()
-    path, cost = race.search_star_a()
+    path, cost, num_nodes = race.search_star_a()
     race.draw_circuit_path(path)
-    show_results(path, cost)
+    show_results(path, cost, num_nodes)
 
 def fill_choices(window,entrys):
     global choices

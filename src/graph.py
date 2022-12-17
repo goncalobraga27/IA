@@ -79,7 +79,7 @@ class Graph:
         path.append(start)
 
         if start.coord in end:
-            return path, self.path_cost(path)
+            return path, self.path_cost(path), len(path)
 
         for (adjacent, weight) in self.graph[start]:
             if adjacent not in visited:
@@ -96,6 +96,7 @@ class Graph:
         visited = set()
         queue = []
         parent = dict()
+        count = 0
 
         visited.add(start)
         queue.append(start)
@@ -105,6 +106,7 @@ class Graph:
             return path, 0
 
         while len(queue) != 0:
+            count += 1
             node = queue.pop(0)
             for (adjacent, weight) in self.graph[node]:
 
@@ -116,7 +118,7 @@ class Graph:
                         aux = parent[aux]
 
                     path.reverse()
-                    return path, self.path_cost(path)
+                    return path, self.path_cost(path), count
 
                 if adjacent not in visited:
                     visited.add(adjacent)
@@ -134,8 +136,10 @@ class Graph:
         parent[start] = None
         cost = dict()
         cost[start] = 0
+        count = 0
 
         while len(open_list) > 0:
+            count += 1
             n1 = None
             for n2 in open_list:
                 if (n1 is None) or (cost[n2] < cost[n1]):
@@ -150,7 +154,7 @@ class Graph:
                     n_aux = parent[n_aux]
 
                 path.reverse()
-                return path, self.path_cost(path)
+                return path, self.path_cost(path), count
 
             for (adjacent, weight) in self.graph[n1]:
                 if adjacent not in open_list and adjacent not in closed_list:
@@ -164,6 +168,7 @@ class Graph:
 
     # Graph search with the Greedy algorithm
     def search_greedy(self, start, end):
+        count = 0
         open_list = set()
         open_list.add(start)
         closed_list = set()
@@ -171,6 +176,7 @@ class Graph:
         parent[start] = None
 
         while len(open_list) > 0:
+            count += 1
             n1 = None
             for n2 in open_list:
                 if (n1 is None) or (self.heuristic[n2] < self.heuristic[n1]):
@@ -185,7 +191,7 @@ class Graph:
                     n_aux = parent[n_aux]
 
                 path.reverse()
-                return path, self.path_cost(path)
+                return path, self.path_cost(path), count
 
             for (adjacent, weight) in self.graph[n1]:
                 if adjacent not in open_list and adjacent not in closed_list:
@@ -206,8 +212,10 @@ class Graph:
         parent[start] = None
         cost = dict()
         cost[start] = 0
+        count = 0
 
         while len(open_list) > 0:
+            count += 1
             n1 = None
             for n2 in open_list:
                 if (n1 is None) or (self.heuristic[n2] + cost[n2]) < (self.heuristic[n1] + cost[n1]):
@@ -222,7 +230,7 @@ class Graph:
                     n_aux = parent[n_aux]
 
                 path.reverse()
-                return path, self.path_cost(path)
+                return path, self.path_cost(path), count
 
             for (adjacent, weight) in self.graph[n1]:
                 if adjacent not in open_list and adjacent not in closed_list:

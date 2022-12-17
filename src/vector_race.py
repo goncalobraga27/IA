@@ -404,7 +404,7 @@ class VectorRace:
                         break
 
                 if found:
-                    path, cost = self.search_dfs_race(player)
+                    path, cost, num_nodes = self.search_dfs_race(player)
                 else:
                     path = None
             case 2:
@@ -416,7 +416,7 @@ class VectorRace:
                         break
 
                 if found:
-                    path, cost = self.search_bfs_race(player)
+                    path, cost, num_nodes = self.search_bfs_race(player)
                 else:
                     path = None
             case 3:
@@ -429,7 +429,7 @@ class VectorRace:
                         break
 
                 if found:
-                    path, cost = self.search_greedy(player)
+                    path, cost, num_nodes = self.search_greedy(player)
                 else:
                     path = None
             case 4:
@@ -442,7 +442,7 @@ class VectorRace:
                         break
 
                 if found:
-                    path, cost = self.search_star_a(player)
+                    path, cost, num_nodes = self.search_star_a(player)
                 else:
                     path = None
         if path is not None:
