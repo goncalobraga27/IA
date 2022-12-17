@@ -529,7 +529,7 @@ class VectorRace:
                 if self.show_map[i][j] == 'F':
                     ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='black'))
                 if self.show_map[i][j] == 'P':
-                    ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='#FF1493'))
+                    ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='#90ee90'))
 
         colors = ['red', 'purple', 'green', 'orange']
         i = 0
