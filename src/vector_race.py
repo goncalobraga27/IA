@@ -370,6 +370,11 @@ class VectorRace:
             node = Node(self.start, (0, 0))
         return self.graph.search_bfs(node, self.goal)
 
+    def search_uniform_cost(self, node=None):  # This function do the uniform cost algorithm for the graph of the race
+        if node is None:
+            node = Node(self.start, (0, 0))
+        return self.graph.search_uniform_cost(node, self.goal)
+
     def search_greedy(self, node=None):  # This function do the greedy algorithm for the graph of the race
         if node is None:
             node = Node(self.start, (0, 0))
@@ -443,7 +448,7 @@ class VectorRace:
         if path is not None:
             next_state = path[1]
         else:
-            next_state = None # plano de contigencia
+            next_state = None
             next_states = self.graph.graph[player]
             for edge in next_states:
                 state = edge[0]
@@ -472,14 +477,7 @@ class VectorRace:
         return ret
 
     def repr_map(self, players):
-        #y_max = len(self.show_map)
-        #i = 1
-        #for node in players:
-            #self.show_map[y_max - node.coord[1]][node.coord[0] - 1] = chr(i)
-            #i += 1
         self.draw_circuit_points(players)
-        #for node in players:
-            #self.show_map[y_max - node.coord[1]][node.coord[0] - 1] = '-'
 
     def multiplayer(self, choices):
         players = list()

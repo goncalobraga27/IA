@@ -125,6 +125,43 @@ class Graph:
 
         return None
 
+    # Graph search with the Uniform Cost algorithm
+    def search_uniform_cost(self, start, end):
+        open_list = set()
+        open_list.add(start)
+        closed_list = set()
+        parent = dict()
+        parent[start] = None
+        cost = dict()
+        cost[start] = 0
+
+        while len(open_list) > 0:
+            n1 = None
+            for n2 in open_list:
+                if (n1 is None) or (cost[n2] < cost[n1]):
+                    n1 = n2
+
+            if n1.coord in end:
+                n_aux = n1
+                path = []
+
+                while n_aux is not None:
+                    path.append(n_aux)
+                    n_aux = parent[n_aux]
+
+                path.reverse()
+                return path, self.path_cost(path)
+
+            for (adjacent, weight) in self.graph[n1]:
+                if adjacent not in open_list and adjacent not in closed_list:
+                    open_list.add(adjacent)
+                    parent[adjacent] = n1
+                    cost[adjacent] = cost[n1] + weight
+
+            open_list.remove(n1)
+            closed_list.add(n1)
+        return None
+
     # Graph search with the Greedy algorithm
     def search_greedy(self, start, end):
         open_list = set()
