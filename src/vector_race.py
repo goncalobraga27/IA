@@ -401,8 +401,9 @@ class VectorRace:
         choice = choices[num]
         aux = []
         for i in range(len(players)):
-            aux.append(players[i].coord)
-        aux.pop(num)
+            if i != num and players[i].coord not in self.goal:
+                aux.append(players[i].coord)
+
         path = None
         match choice:
             case 1:

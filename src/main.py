@@ -174,7 +174,10 @@ def option1(vector_race):
 
 def other_options(vector_race, choices):
     winner = vector_race.multiplayer(choices)
-    print("Jogador " + str(winner) + " venceu!") # empate
+    if winner == 0:
+        print("Empate!")
+    else:
+        print("Jogador " + str(winner) + " venceu!")
 
 def main_ant():
     print("####################### VECTOR RACE #############################")
