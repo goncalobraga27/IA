@@ -450,22 +450,15 @@ class VectorRace:
         for c in choices:
             players.append(Node(self.start, (0, 0)))
 
+        vencedor = None
+
         while not self.verify_end_simulation(players): # enquanto todos nao acabarem
             players = self.simulate_turn(players, choices)
             self.draw_circuit_points(players)
-            numberFinishers = 0
-            for i in range(len(players)):
-                if players[i].coord in self.goal:
-                    if numberFinishers > 1:
-                        return 0
-                    else:
-                        numberFinishers = numberFinishers + 1
-                        vencedor = i
+            aux = self.get_winner(players)
+            if vencedor is None and aux!=-1:
+                vencedor = aux
         return vencedor
-
-
-
-
 
     def draw_circuit(self, node, ret=False):
         fig, ax = plt.subplots()
