@@ -1,3 +1,4 @@
+import copy
 import math
 from graph import Graph
 from node import Node
@@ -360,110 +361,77 @@ class VectorRace:
                 if st not in visited and (st.coord not in self.goal):
                     states.add(st)
 
-    def search_dfs_race(self, node=None):  # This function do the dfs search algorithm for the graph of the race
+    def search_dfs_race(self, node=None, players=None):  # This function do the dfs search algorithm for the graph of the race
         if node is None:
             node = Node(self.start, (0, 0))
-        return self.graph.search_dfs(node, self.goal)
+        return self.graph.search_dfs(node, self.goal, players=players)
 
-    def search_bfs_race(self, node=None):  # This function do the bfs search algorithm for the graph of the race
+    def search_bfs_race(self, node=None, players=None):  # This function do the bfs search algorithm for the graph of the race
         if node is None:
             node = Node(self.start, (0, 0))
-        return self.graph.search_bfs(node, self.goal)
+        return self.graph.search_bfs(node, self.goal, players=players)
 
-    def search_uniform_cost(self, node=None):  # This function do the uniform cost algorithm for the graph of the race
+    def search_uniform_cost(self, node=None, players=None):  # This function do the uniform cost algorithm for the graph of the race
         if node is None:
             node = Node(self.start, (0, 0))
-        return self.graph.search_uniform_cost(node, self.goal)
+        return self.graph.search_uniform_cost(node, self.goal, players=players)
 
-    def search_greedy(self, node=None):  # This function do the greedy algorithm for the graph of the race
+    def search_iterative(self, node=None, players=None):  # This function do the iterative algorithm for the graph of the race
         if node is None:
             node = Node(self.start, (0, 0))
-        return self.graph.search_greedy(node, self.goal)
+        return self.graph.iterative_search(node, self.goal, players=players)
 
-    def search_star_a(self, node=None):  # This function do the "a star" algorithm for the graph of the race
+    def search_greedy(self, node=None, players=None):  # This function do the greedy algorithm for the graph of the race
         if node is None:
             node = Node(self.start, (0, 0))
-        return self.graph.search_star_a(node, self.goal)
+        return self.graph.search_greedy(node, self.goal, players=players)
+
+    def search_star_a(self, node=None, players=None):  # This function do the "a star" algorithm for the graph of the race
+        if node is None:
+            node = Node(self.start, (0, 0))
+        return self.graph.search_star_a(node, self.goal, players=players)
 
     def verify_end_simulation(self, players):
         for node in players:
-            if node.coord in self.goal:
-                return True
-        return False
+            if node.coord not in self.goal:
+                return False
+        return True
 
-    def get_next_state(self, player, num, choices):
+    def get_next_state(self, players, num, choices):
         choice = choices[num]
+        aux = []
+        for i in range(len(players)):
+            aux.append(players[i].coord)
+        aux.pop(num)
         path = None
         match choice:
             case 1:
-                self.create_graph(player)
-                found = False
-                for node in self.graph.nodes:
-                    if node.coord in self.goal:
-                        found = True
-                        break
-
-                if found:
-                    path, cost, num_nodes = self.search_dfs_race(player)
-                else:
-                    path = None
+                path, cost, num_nodes = self.search_dfs_race(players[num], aux)
             case 2:
-                self.create_graph(player)
-                found = False
-                for node in self.graph.nodes:
-                    if node.coord in self.goal:
-                        found = True
-                        break
-
-                if found:
-                    path, cost, num_nodes = self.search_bfs_race(player)
-                else:
-                    path = None
+                path, cost, num_nodes = self.search_bfs_race(players[num], aux)
             case 3:
-                self.create_graph(player)
-                self.graph_heuristic()
-                found = False
-                for node in self.graph.nodes:
-                    if node.coord in self.goal:
-                        found = True
-                        break
-
-                if found:
-                    path, cost, num_nodes = self.search_greedy(player)
-                else:
-                    path = None
+                path, cost, num_nodes = self.search_uniform_cost(players[num], aux)
             case 4:
-                self.create_graph(player)
+                path, cost, num_nodes = self.search_iterative(players[num], aux)
+            case 5: # d m
                 self.graph_heuristic()
-                found = False
-                for node in self.graph.nodes:
-                    if node.coord in self.goal:
-                        found = True
-                        break
+                path, cost, num_nodes = self.search_greedy(players[num], aux)
+            case 6:
+                self.graph_heuristic_wall()
+                path, cost, num_nodes = self.search_greedy(players[num], aux)
+            case 7: # d m
+                self.graph_heuristic()
+                path, cost, num_nodes = self.search_star_a(players[num], aux)
+            case 8:
+                self.graph_heuristic_wall()
+                path, cost, num_nodes = self.search_star_a(players[num], aux)
 
-                if found:
-                    path, cost, num_nodes = self.search_star_a(player)
-                else:
-                    path = None
-        if path is not None:
-            next_state = path[1]
-        else:
-            next_state = None
-            next_states = self.graph.graph[player]
-            for edge in next_states:
-                state = edge[0]
-                if abs(state.vel[0]) <= abs(player.vel[0]) and abs(state.vel[1]) <= abs(player.vel[0]):
-                    next_state = state
-
-        return next_state
+        return path[1]
 
     def simulate_turn(self, players, choices):
         for i in range(len(players)):
-            players[i] = self.get_next_state(players[i], i, choices)
-            self.game_map[players[i].coord] = 'X'
-
-        for i in range(len(players)):
-            self.game_map[players[i].coord] = '-'
+            if players[i].coord not in self.goal:
+                players[i] = self.get_next_state(players, i, choices)
 
         return players
 
@@ -476,18 +444,14 @@ class VectorRace:
                 ret = i+1
         return ret
 
-    def repr_map(self, players):
-        self.draw_circuit_points(players)
-
     def multiplayer(self, choices):
         players = list()
         for c in choices:
             players.append(Node(self.start, (0, 0)))
 
-        while not self.verify_end_simulation(players):
+        while not self.verify_end_simulation(players): # enquanto todos nao acabarem
             players = self.simulate_turn(players, choices)
-            self.repr_map(players)
-            #input()
+            self.draw_circuit_points(players)
 
         return self.get_winner(players)
 
@@ -507,7 +471,7 @@ class VectorRace:
                 if self.show_map[i][j] == 'F':
                     ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='black'))
                 if self.show_map[i][j] == 'P':
-                    ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='#FF1493'))
+                    ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='green'))
 
         plt.scatter(node[0] - 0.5, node[1] - 0.5, color='red')
         if not ret:
@@ -536,6 +500,33 @@ class VectorRace:
         for node in nodes:
             plt.scatter(node.coord[0] - 0.5, node.coord[1] - 0.5, color=colors[i])
             i += 1
+        plt.show()
+
+    def draw_circuit_path_lines(self, path):
+        fig, ax = plt.subplots()
+        plt.xlim(0, len(self.show_map[0]))
+        plt.ylim(0, len(self.show_map))
+        plt.tick_params(axis='both', left=False, top=False, right=False, bottom=False, labelleft=False, labeltop=False,
+                        labelright=False, labelbottom=False)
+
+        for i in range(len(self.show_map)):
+            plt.axhline(y=i + 1, linewidth=0.5, color='#d3d3d3')
+            for j in range(len(self.show_map[i])):
+                plt.axvline(x=j + 1, linewidth=0.5, color='#d3d3d3')
+                if self.show_map[i][j] == 'X':
+                    ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='#d3d3d3'))
+                if self.show_map[i][j] == 'F':
+                    ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='black'))
+                if self.show_map[i][j] == 'P':
+                    ax.add_patch(Rectangle((j, len(self.show_map) - i - 1), 1, 1, color='#90ee90'))
+
+        x_values = []
+        y_values = []
+        for node in path:
+            x_values.append(node.coord[0] - 0.5)
+            y_values.append(node.coord[1] - 0.5)
+
+        plt.plot(x_values,y_values, 'bo', linestyle="-")
         plt.show()
 
     def draw_circuit_path(self, path):

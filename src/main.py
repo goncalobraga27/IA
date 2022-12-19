@@ -3,6 +3,7 @@ from vector_race import VectorRace
 
 
 def chose_heuristic(vector_race):
+    vector_race.graph.heuristic = dict()
     print("\n#################################################################")
     print("Qual é a heurística que deseja utilizar?")
     print("1-Distância para a meta")
@@ -20,17 +21,18 @@ def chose_heuristic(vector_race):
     else:
         vector_race.graph_heuristic_wall()
 
-
-# 1 - DFS, 2 - BFS, 3 - Greedy, 4 - A*
 def chose_player_algorithm(num):
     print("\n#################################################################")
     print("Indique o algoritmo de procura a utilizar pelo jogador " + str(num))
-    print("1 - DFS")
-    print("2 - BFS")
-    print("3 - Greedy")
-    print("4 - A*")
+    print("1 - Procura Primeiro em Profundidade (DFS)")
+    print("2 - Procura Primeiro em Largura (BFS)")
+    print("3 - Procura de Custo Uniforme")
+    print("4 - Procura Iterativa")
+    print("5 - Procura Gulosa - Distância à meta")
+    print("6 - Procura Gulosa - Bem posicionado na pista")
+    print("7 - Procura A* - Distância à meta")
+    print("8 - Procura A* - Bem posicionado na pista")
     print("#################################################################")
-
 
 def invalid_option():
     print()
@@ -38,23 +40,22 @@ def invalid_option():
     print("Intoduza a sua opção: ", end="")
     return int(input())
 
-
 def single_player_menu():
     print("\n#################################################################")
-    print("1-Imprimir Circuito")
-    print("2-Desenhar Circuito")
-    print("3-Imprimir Grafo")
-    print("4-Desenhar Grafo")
-    print("5-Imprimir Nodos do Grafo")
-    print("6-Imprimir Arestas do Grafo")
-    print("7-BFS")
-    print("8-DFS")
-    print("9-Custo uniforme")
-    print("10-Pesquisa Gulosa")
-    print("11-Pesquisa A*")
-    print("0-Sair")
+    print("1 - Imprimir Circuito")
+    print("2 - Desenhar Circuito")
+    print("3 - Imprimir Grafo")
+    print("4 - Desenhar Grafo")
+    print("5 - Imprimir Nodos do Grafo")
+    print("6 - Imprimir Arestas do Grafo")
+    print("7 - Procura Primeiro em Profundidade (DFS)")
+    print("8 - Procura Primeiro em Largura (BFS)")
+    print("9 - Procura de Custo Uniforme")
+    print("10 - Procura Iterativa")
+    print("11 - Procura Gulosa")
+    print("12 - Procura A*")
+    print("0 - Sair")
     print("#################################################################")
-
 
 def option1(vector_race):
     option = -1
@@ -82,42 +83,76 @@ def option1(vector_race):
                 print(vector_race.graph.show_edges())
             case 7:
                 print()
-                path, cost, num_nodes = vector_race.search_bfs_race()
-                print(path, end="\nCost= ")
-                print(cost, end="\nNúmero de nodos visitados= ")
+                path, cost, num_nodes = vector_race.search_dfs_race()
+                print(path, end="\nCusto = ")
+                print(cost, end="\nNúmero de nodos visitados = ")
                 print(num_nodes, end="\n\n")
                 print(vector_race.print_map(path))
-                vector_race.draw_circuit_path(path)
-                print("Um gif com o caminho tomado pelo carro foi gerado")
+                vector_race.draw_circuit_path_lines(path)
+                print()
+                print("Deseja gerar um gif com o caminho tomado pelo carro (S ou N)? ",end="")
+                str1 = input()
+                if str1.upper() == "S":
+                    vector_race.draw_circuit_path(path)
+                    print("O gif com o caminho tomado pelo carro foi gerado")
             case 8:
                 print()
-                path, cost, num_nodes = vector_race.search_dfs_race()
-                print(path, end="\nCost= ")
-                print(cost, end="\nNúmero de nodos visitados= ")
+                path, cost, num_nodes = vector_race.search_bfs_race()
+                print(path, end="\nCusto = ")
+                print(cost, end="\nNúmero de nodos visitados = ")
                 print(num_nodes, end="\n\n")
                 print(vector_race.print_map(path))
-                vector_race.draw_circuit_path(path)
-                print("Um gif com o caminho tomado pelo carro foi gerado")
+                vector_race.draw_circuit_path_lines(path)
+                print()
+                print("Deseja gerar um gif com o caminho tomado pelo carro (S ou N)? ", end="")
+                str1 = input()
+                if str1.upper() == "S":
+                    vector_race.draw_circuit_path(path)
+                    print("O gif com o caminho tomado pelo carro foi gerado")
             case 9:
                 print()
-                path, cost, num_nodes = vector_race.search_dfs_race()
-                print(path, end="\nCost= ")
-                print(cost, end="\nNúmero de nodos visitados= ")
+                path, cost, num_nodes = vector_race.search_uniform_cost()
+                print(path, end="\nCusto = ")
+                print(cost, end="\nNúmero de nodos visitados = ")
                 print(num_nodes, end="\n\n")
                 print(vector_race.print_map(path))
-                vector_race.draw_circuit_path(path)
-                print("Um gif com o caminho tomado pelo carro foi gerado")
+                vector_race.draw_circuit_path_lines(path)
+                print()
+                print("Deseja gerar um gif com o caminho tomado pelo carro (S ou N)? ", end="")
+                str1 = input()
+                if str1.upper() == "S":
+                    vector_race.draw_circuit_path(path)
+                    print("O gif com o caminho tomado pelo carro foi gerado")
             case 10:
+                print()
+                path, cost, num_nodes = vector_race.search_iterative()
+                print(path, end="\nCusto = ")
+                print(cost, end="\nNúmero de nodos visitados = ")
+                print(num_nodes, end="\n\n")
+                print(vector_race.print_map(path))
+                vector_race.draw_circuit_path_lines(path)
+                print()
+                print("Deseja gerar um gif com o caminho tomado pelo carro (S ou N)? ", end="")
+                str1 = input()
+                if str1.upper() == "S":
+                    vector_race.draw_circuit_path(path)
+                    print("O gif com o caminho tomado pelo carro foi gerado")
+            case 11:
                 chose_heuristic(vector_race)
                 print()
                 path, cost, num_nodes = vector_race.search_greedy()
-                print(path, end="\nCost= ")
-                print(cost, end="\nNúmero de nodos visitados= ")
+                print(path, end="\nCusto = ")
+                print(cost, end="\nNúmero de nodos visitados = ")
                 print(num_nodes, end="\n\n")
                 print(vector_race.print_map(path))
-                vector_race.draw_circuit_path(path)
-                print("Um gif com o caminho tomado pelo caro foi gerado")
-            case 11:
+                vector_race.draw_circuit_path_lines(path)
+                print()
+                print("Deseja gerar um gif com o caminho tomado pelo carro (S ou N)? ", end="")
+                str1 = input()
+                if str1.upper() == "S":
+                    vector_race.draw_circuit_path(path)
+                    print("O gif com o caminho tomado pelo carro foi gerado")
+            case 12:
                 chose_heuristic(vector_race)
                 print()
                 path, cost, num_nodes = vector_race.search_star_a()
@@ -125,18 +160,21 @@ def option1(vector_race):
                 print(cost, end="\nNúmero de nodos visitados= ")
                 print(num_nodes, end="\n\n")
                 print(vector_race.print_map(path))
-                vector_race.draw_circuit_path(path)
-                print("Um gif com o caminho tomado pelo carro foi gerado")
+                vector_race.draw_circuit_path_lines(path)
+                print()
+                print("Deseja gerar um gif com o caminho tomado pelo carro (S ou N)? ", end="")
+                str1 = input()
+                if str1.upper() == "S":
+                    vector_race.draw_circuit_path(path)
+                    print("O gif com o caminho tomado pelo carro foi gerado")
             case 0:
                 option = 0
             case _:
                 print("Opção invalida.")
 
-
 def other_options(vector_race, choices):
     winner = vector_race.multiplayer(choices)
-    print("Jogador " + str(winner) + " venceu!")
-
+    print("Jogador " + str(winner) + " venceu!") # empate
 
 def main_ant():
     print("####################### VECTOR RACE #############################")
@@ -161,7 +199,6 @@ def main_ant():
             option_players = invalid_option()
 
         vector_race.create_graph()
-
         if option_players == 1:
             option1(vector_race)
         else:
@@ -170,7 +207,7 @@ def main_ant():
                 chose_player_algorithm(i + 1)
                 print("Introduza a sua opção: ", end="")
                 inp = int(input())
-                while inp < 1 or inp > 4:
+                while inp < 1 or inp > 8:
                     inp = invalid_option()
                 save_choices.append(inp)
             other_options(vector_race, save_choices)
@@ -366,4 +403,3 @@ if __name__ == "__main__":
     else:
         print()
         main_ant()
-

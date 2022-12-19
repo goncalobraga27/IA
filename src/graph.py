@@ -69,29 +69,44 @@ class Graph:
         return cost
 
     # BFS search, returns path and the path cost
-    def search_dfs(self, start, end, path=None, visited=None):  # end -> goals set
+    def search_dfs(self, start, end, path=None, visited=None, depth=None, players=None):  # end -> goals set
         if path is None:
             path = []
         if visited is None:
             visited = set()
+        if depth is None:
+            depth = math.inf
 
         visited.add(start)
         path.append(start)
 
         if start.coord in end:
-            return path, self.path_cost(path), len(path)
+            return path, self.path_cost(path), len(visited)
+        elif depth == 0:
+            path.pop()
+            return None
 
         for (adjacent, weight) in self.graph[start]:
-            if adjacent not in visited:
-                result = self.search_dfs(adjacent, end, path, visited)
+            if (adjacent not in visited) and ((players is None) or (adjacent.coord not in players)):
+                result = self.search_dfs(adjacent, end, path, visited, depth-1, players)
                 if result is not None:
                     return result
 
         path.pop()
         return None
 
+    def iterative_search(self, start, end, players=None):
+        depth = 0
+        ret = None
+
+        while ret is None:
+            ret = self.search_dfs(start,end,depth=depth, players=players)
+            depth += 1
+
+        return ret
+
     # BFS search, returns path and the path cost
-    def search_bfs(self, start, end):  # end -> goals set
+    def search_bfs(self, start, end, players=None):  # end -> goals set
         path = []
         visited = set()
         queue = []
@@ -109,26 +124,26 @@ class Graph:
             count += 1
             node = queue.pop(0)
             for (adjacent, weight) in self.graph[node]:
+                if (players is None) or (adjacent.coord not in players):
+                    if adjacent.coord in end:
+                        parent[adjacent] = node
+                        aux = adjacent
+                        while aux is not None:
+                            path.append(aux)
+                            aux = parent[aux]
 
-                if adjacent.coord in end:
-                    parent[adjacent] = node
-                    aux = adjacent
-                    while aux is not None:
-                        path.append(aux)
-                        aux = parent[aux]
+                        path.reverse()
+                        return path, self.path_cost(path), count
 
-                    path.reverse()
-                    return path, self.path_cost(path), count
-
-                if adjacent not in visited:
-                    visited.add(adjacent)
-                    parent[adjacent] = node
-                    queue.append(adjacent)
+                    if adjacent not in visited:
+                        visited.add(adjacent)
+                        parent[adjacent] = node
+                        queue.append(adjacent)
 
         return None
 
     # Graph search with the Uniform Cost algorithm
-    def search_uniform_cost(self, start, end):
+    def search_uniform_cost(self, start, end, players=None):
         open_list = set()
         open_list.add(start)
         closed_list = set()
@@ -157,7 +172,7 @@ class Graph:
                 return path, self.path_cost(path), count
 
             for (adjacent, weight) in self.graph[n1]:
-                if adjacent not in open_list and adjacent not in closed_list:
+                if (adjacent not in open_list) and (adjacent not in closed_list) and ((players is None) or (adjacent.coord not in players)):
                     open_list.add(adjacent)
                     parent[adjacent] = n1
                     cost[adjacent] = cost[n1] + weight
@@ -167,7 +182,7 @@ class Graph:
         return None
 
     # Graph search with the Greedy algorithm
-    def search_greedy(self, start, end):
+    def search_greedy(self, start, end, players=None):
         count = 0
         open_list = set()
         open_list.add(start)
@@ -194,7 +209,7 @@ class Graph:
                 return path, self.path_cost(path), count
 
             for (adjacent, weight) in self.graph[n1]:
-                if adjacent not in open_list and adjacent not in closed_list:
+                if (adjacent not in open_list) and (adjacent not in closed_list) and ((players is None) or (adjacent.coord not in players)):
                     open_list.add(adjacent)
                     parent[adjacent] = n1
 
@@ -204,7 +219,7 @@ class Graph:
         return None
 
     # Graph search with the A* algorithm
-    def search_star_a(self, start, end):
+    def search_star_a(self, start, end, players=None):
         open_list = set()
         open_list.add(start)
         closed_list = set()
@@ -233,7 +248,7 @@ class Graph:
                 return path, self.path_cost(path), count
 
             for (adjacent, weight) in self.graph[n1]:
-                if adjacent not in open_list and adjacent not in closed_list:
+                if (adjacent not in open_list) and (adjacent not in closed_list) and ((players is None) or (adjacent.coord not in players)):
                     open_list.add(adjacent)
                     parent[adjacent] = n1
                     cost[adjacent] = cost[n1] + weight
