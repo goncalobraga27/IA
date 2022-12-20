@@ -404,30 +404,36 @@ class VectorRace:
             if i != num and players[i].coord not in self.goal:
                 aux.append(players[i].coord)
 
-        path = None
+        res = None
         match choice:
             case 1:
-                path, cost, num_nodes = self.search_dfs_race(players[num], aux)
+                res = self.search_bfs_race(players[num], aux)
             case 2:
-                path, cost, num_nodes = self.search_bfs_race(players[num], aux)
-            case 3:
-                path, cost, num_nodes = self.search_uniform_cost(players[num], aux)
+                res = self.search_uniform_cost(players[num], aux)
+            case 3: # d m
+                self.graph_heuristic()
+                res = self.search_greedy(players[num], aux)
             case 4:
-                path, cost, num_nodes = self.search_iterative(players[num], aux)
+                self.graph_heuristic_wall()
+                res = self.search_greedy(players[num], aux)
             case 5: # d m
                 self.graph_heuristic()
-                path, cost, num_nodes = self.search_greedy(players[num], aux)
+                res = self.search_star_a(players[num], aux)
             case 6:
                 self.graph_heuristic_wall()
-                path, cost, num_nodes = self.search_greedy(players[num], aux)
-            case 7: # d m
-                self.graph_heuristic()
-                path, cost, num_nodes = self.search_star_a(players[num], aux)
-            case 8:
-                self.graph_heuristic_wall()
-                path, cost, num_nodes = self.search_star_a(players[num], aux)
+                res = self.search_star_a(players[num], aux)
 
-        return path[1]
+        if res is None:
+            player = players[num]
+            next_state = None
+            next_states = self.graph.graph[player]
+            for edge in next_states:
+                state = edge[0]
+                if abs(state.vel[0]) <= abs(player.vel[0]) and abs(state.vel[1]) <= abs(player.vel[0]):
+                    next_state = state
+            return next_state
+
+        return res[0][1]
 
     def simulate_turn(self, players, choices):
         for i in range(len(players)):
@@ -452,12 +458,24 @@ class VectorRace:
 
         vencedor = None
 
-        while not self.verify_end_simulation(players): # enquanto todos nao acabarem
+        i = 0
+        players_aux = dict()
+        players_aux[i] = copy.deepcopy(players)
+        i += 1
+
+        while not self.verify_end_simulation(players): #enquanto todos nao acabarem
             players = self.simulate_turn(players, choices)
-            self.draw_circuit_points(players)
+            players_aux[i] = copy.deepcopy(players)
+            i += 1
             aux = self.get_winner(players)
             if vencedor is None and aux!=-1:
                 vencedor = aux
+
+        i_aux = 0
+        while i_aux<i:
+            self.draw_circuit_points(players_aux[i_aux])
+            i_aux += 1
+
         return vencedor
 
     def draw_circuit(self, node, ret=False):

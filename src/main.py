@@ -24,14 +24,12 @@ def chose_heuristic(vector_race):
 def chose_player_algorithm(num):
     print("\n#################################################################")
     print("Indique o algoritmo de procura a utilizar pelo jogador " + str(num))
-    print("1 - Procura Primeiro em Profundidade (DFS)")
-    print("2 - Procura Primeiro em Largura (BFS)")
-    print("3 - Procura de Custo Uniforme")
-    print("4 - Procura Iterativa")
-    print("5 - Procura Gulosa - Distância à meta")
-    print("6 - Procura Gulosa - Bem posicionado na pista")
-    print("7 - Procura A* - Distância à meta")
-    print("8 - Procura A* - Bem posicionado na pista")
+    print("1 - Procura Primeiro em Largura (BFS)")
+    print("2 - Procura de Custo Uniforme")
+    print("3 - Procura Gulosa - Distância à meta")
+    print("4 - Procura Gulosa - Bem posicionado na pista")
+    print("5 - Procura A* - Distância à meta")
+    print("6 - Procura A* - Bem posicionado na pista")
     print("#################################################################")
 
 def invalid_option():
@@ -196,9 +194,9 @@ def main():
     if configured:
         print("Circuito configurado")
         print("#################################################################")
-        print("Introduza o número de jogadores (max 3): ", end="")
+        print("Introduza o número de jogadores (max 4): ", end="")
         option_players = int(input())
-        while option_players < 1 or option_players > 3:
+        while option_players < 1 or option_players > 4:
             option_players = invalid_option()
 
         vector_race.create_graph()
@@ -210,7 +208,7 @@ def main():
                 chose_player_algorithm(i + 1)
                 print("Introduza a sua opção: ", end="")
                 inp = int(input())
-                while inp < 1 or inp > 8:
+                while inp < 1 or inp > 6:
                     inp = invalid_option()
                 save_choices.append(inp)
             other_options(vector_race, save_choices)
