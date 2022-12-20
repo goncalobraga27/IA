@@ -196,9 +196,9 @@ def main():
     if configured:
         print("Circuito configurado")
         print("#################################################################")
-        print("Introduza o número de jogadores (max 4): ", end="")
+        print("Introduza o número de jogadores (max 3): ", end="")
         option_players = int(input())
-        while option_players < 1 or option_players > 4:
+        while option_players < 1 or option_players > 3:
             option_players = invalid_option()
 
         vector_race.create_graph()
@@ -214,95 +214,6 @@ def main():
                     inp = invalid_option()
                 save_choices.append(inp)
             other_options(vector_race, save_choices)
-
-
-
-
-race = VectorRace()
-num_players = int()
-exception = ""
-choices = []
-
-def config_map(window,map_file,num):
-    try:
-        global race
-        global num_players
-        global exception
-        if num < 1 or num > 4:
-            raise ValueError("Número de jogadores inválido.")
-        num_players = num
-        race = VectorRace.parser(map_file) # threads aqui
-        race.show_parser(map_file)
-    except FileNotFoundError:
-        exception = "O ficheiro não existe."
-    except ValueError:
-        exception = "Número de jogadores inválido."
-    finally:
-        window.destroy()
-
-def show_results(path, cost, num_nodes):
-    out = "Caminho:\n"
-    i = 0
-    for node in path:
-        out = out + str(node) + ", "
-        if i == 1:
-            out = out + "\n"
-            i = 0
-        else:
-            i += 1
-    out = out + "\nCusto: " + str(cost)
-    out = out + "\nNúmero de nós visitados: " + str(num_nodes)
-
-    window = tkinter.Tk()
-    window.geometry("480x680")
-    window.title("VECTOR RACE")
-    window.configure(bg='#C2C2C2')
-    frame_1 = tkinter.Frame(master=window, bg='#C2C2C2')
-    frame_1.pack(pady=20, padx=60, fill="both", expand=True)
-    label_1 = tkinter.Label(master=frame_1, justify=tkinter.LEFT,
-                            text=out, font=('Roboto', 10, 'normal'),
-                            bg='#C2C2C2')
-    label_1.pack(pady=12, padx=10)
-    window.mainloop()
-
-def search_dfs():
-    path, cost, num_nodes = race.search_dfs_race()
-    race.draw_circuit_path(path) # mudar para mostrar no matplotlib
-    show_results(path, cost, num_nodes)
-
-def search_bfs():
-    path, cost, num_nodes = race.search_bfs_race()
-    race.draw_circuit_path(path)
-    show_results(path, cost, num_nodes)
-
-def uniform_cost():
-    path, cost , num_nodes = race.search_uniform_cost()
-    race.draw_circuit_path(path)
-    show_results(path, cost, num_nodes)
-
-def greedy_fst():
-    race.graph_heuristic()
-    path, cost, num_nodes = race.search_greedy()
-    race.draw_circuit_path(path)
-    show_results(path, cost, num_nodes)
-
-def greedy_snd():
-    race.graph_heuristic_wall()
-    path, cost, num_nodes = race.search_greedy()
-    race.draw_circuit_path(path)
-    show_results(path, cost, num_nodes)
-
-def a_star_fst():
-    race.graph_heuristic()
-    path, cost, num_nodes = race.search_star_a()
-    race.draw_circuit_path(path)
-    show_results(path, cost, num_nodes)
-
-def a_star_snd():
-    race.graph_heuristic_wall()
-    path, cost, num_nodes = race.search_star_a()
-    race.draw_circuit_path(path)
-    show_results(path, cost, num_nodes)
 
 if __name__ == "__main__":
         main()
